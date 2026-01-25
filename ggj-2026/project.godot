@@ -14,10 +14,17 @@ config/name="GGJ2026"
 config/features=PackedStringArray("4.5", "Mobile")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/viewport_width=1600
+window/size/viewport_height=900
+window/stretch/mode="viewport"
+
 [dotnet]
 
 project/assembly_name="GGJ2026"
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="mobile"
