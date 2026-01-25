@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dtetau2unuwne"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8vpbu"]
+
+[node name="TestScene" type="Node2D"]
+
+[node name="animation" type="AnimatedSprite2D" parent="."]
+position = Vector2(-149, 47)
+sprite_frames = SubResource("SpriteFrames_8vpbu")
