@@ -1,14 +1,21 @@
-[gd_scene load_steps=5 format=3 uid="uid://c6f1bby6ysc1w"]
+[gd_scene load_steps=9 format=3 uid="uid://c6f1bby6ysc1w"]
 
 [ext_resource type="Script" uid="uid://qdj1h4807qvl" path="res://Script/game_world.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://503kg0miryk0" path="res://Prefab/character.tscn" id="2_character"]
-[ext_resource type="PackedScene" path="res://Prefab/enemy.tscn" id="3_enemy"]
+[ext_resource type="PackedScene" path="res://Prefab/enemy_dancer.tscn" id="3_dancer"]
+[ext_resource type="PackedScene" path="res://Prefab/enemy_princess.tscn" id="4_princess"]
+[ext_resource type="PackedScene" path="res://Prefab/enemy_guard.tscn" id="5_guard"]
+[ext_resource type="PackedScene" path="res://Prefab/enemy_butler.tscn" id="6_butler"]
+[ext_resource type="PackedScene" path="res://Prefab/supervisor.tscn" id="7_supervisor"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
 size = Vector2(20000, 200)
 
 [node name="GameWorld" type="Node2D"]
 script = ExtResource("1_script")
+
+[node name="Supervisor" parent="." instance=ExtResource("7_supervisor")]
+position = Vector2(2407, 427)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(400, 450)
@@ -21,18 +28,21 @@ position = Vector2(10000, 868)
 shape = SubResource("RectangleShape2D_platform")
 
 [node name="PlatformVisual" type="Polygon2D" parent="Platform"]
-scale = Vector2(0.088, 1)
+scale = Vector2(0.11579999, 1)
 color = Color(0.4, 0.35, 0.3, 1)
-polygon = PackedVector2Array(0, 768, 20000, 768, 20000, 968, 0, 968)
+polygon = PackedVector2Array(0, 768, 20000, 768, 20000, 863.0349, 20000, 968, 0, 968)
 
 [node name="Character" parent="." instance=ExtResource("2_character")]
 position = Vector2(400, 736)
 
-[node name="Enemy1" parent="." instance=ExtResource("3_enemy")]
+[node name="Dancer" parent="." instance=ExtResource("3_dancer")]
 position = Vector2(800, 744)
 
-[node name="Enemy2" parent="." instance=ExtResource("3_enemy")]
+[node name="Princess" parent="." instance=ExtResource("4_princess")]
 position = Vector2(1200, 744)
 
-[node name="Enemy3" parent="." instance=ExtResource("3_enemy")]
+[node name="Guard" parent="." instance=ExtResource("5_guard")]
 position = Vector2(1600, 744)
+
+[node name="Butler" parent="." instance=ExtResource("6_butler")]
+position = Vector2(2000, 744)
