@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="GGJ2026"
+run/main_scene="res://Scene/GameWorld.tscn"
 config/features=PackedStringArray("4.5", "Mobile")
 config/icon="res://icon.svg"
 
@@ -24,7 +25,12 @@ window/stretch/mode="viewport"
 
 project/assembly_name="GGJ2026"
 
+[editor]
+
+text_editor/external/use_external_editor=false
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
-renderer/rendering_method="mobile"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
