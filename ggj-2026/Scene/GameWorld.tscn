@@ -66,6 +66,47 @@ text = "游戏失败"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="MaskSlotUI" type="CanvasLayer" parent="."]
+
+[node name="SlotContainer" type="Control" parent="MaskSlotUI"]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -80.0
+offset_right = 500.0
+offset_bottom = -20.0
+grow_vertical = 0
+
+[node name="Slot1Label" type="Label" parent="MaskSlotUI"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 820.0
+offset_right = 240.0
+offset_bottom = 860.0
+theme_override_font_sizes/font_size = 24
+text = "槽位1：空面具"
+
+[node name="Slot2Label" type="Label" parent="MaskSlotUI"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 820.0
+offset_right = 480.0
+offset_bottom = 860.0
+theme_override_font_sizes/font_size = 24
+text = "槽位2：空面具"
+
+[node name="PrincessLabel" type="Label" parent="MaskSlotUI"]
+visible = false
+layout_mode = 0
+offset_left = 20.0
+offset_top = 865.0
+offset_right = 200.0
+offset_bottom = 895.0
+theme_override_font_sizes/font_size = 22
+text = "公主面具"
+
 [node name="Supervisor" parent="." instance=ExtResource("7_supervisor")]
 position = Vector2(2407, 427)
 

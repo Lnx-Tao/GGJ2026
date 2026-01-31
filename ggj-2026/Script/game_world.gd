@@ -2,13 +2,25 @@ extends Node2D
 
 ## 人物在画面中的 X 位置（距左像素，400 = 中间偏左）
 const CHARACTER_SCREEN_X := 400
-## 睁眼 3 秒内若不在灯光区，怀疑值总共增加 30 格（均匀增加，3 秒内完成）
-const SUSPICION_ADD_TOTAL: float = 0.1
-const SUSPICION_EYE_DURATION: float = 3.0
-## 每秒增加量 = 30格 / 3秒（速度均匀）
-const SUSPICION_RATE_PER_SECOND: float = SUSPICION_ADD_TOTAL / SUSPICION_EYE_DURATION
+
+## 以下怀疑值参数可在检查器中直接编辑（选中 GameWorld 节点）
+@export_group("怀疑值 - 睁眼时")
+## 睁眼时长（秒），与监管者设置一致
+@export var suspicion_eye_duration: float = 3.0
+## 睁眼时「不在灯光区」：3 秒内总共增加的怀疑值（0.3 = 30%）
+@export_range(0.0, 1.0, 0.01) var suspicion_add_outside_light: float = 0.3
+## 睁眼时「在灯光下」：3 秒内涨满，此处为“满”的目标值（一般保持 1.0）
+@export_range(0.0, 1.0, 0.01) var suspicion_light_full: float = 1.0
+
+@export_group("怀疑值 - 其它")
+## 每次刺杀成功增加的怀疑值（0.25 = 25%）
+@export_range(0.0, 1.0, 0.01) var suspicion_add_assassination: float = 0.25
+## 舞者面具节奏判定失败增加的怀疑值（0.3 = 30%）
+@export_range(0.0, 1.0, 0.01) var suspicion_add_dancer_fail: float = 0.3
+
+@export_group("怀疑值 - 进度条")
 ## 进度条显示值追赶真实怀疑值的速度（越大动画越快）
-const SUSPICION_BAR_LERP_SPEED: float = 6.0
+@export var suspicion_bar_lerp_speed: float = 6.0
 
 @onready var camera: Camera2D = $Camera2D
 @onready var character: CharacterBody2D = $Character
@@ -16,6 +28,9 @@ const SUSPICION_BAR_LERP_SPEED: float = 6.0
 @onready var suspicion_bar_bg: ColorRect = $SuspicionUI/BarContainer/BarBackground
 @onready var suspicion_bar_fill: ColorRect = $SuspicionUI/BarContainer/BarFill
 @onready var game_over_label: Label = $SuspicionUI/GameOverLabel
+@onready var mask_slot_label_1: Label = $MaskSlotUI/Slot1Label
+@onready var mask_slot_label_2: Label = $MaskSlotUI/Slot2Label
+@onready var princess_label: Label = $MaskSlotUI/PrincessLabel
 
 var dancer_mask: Node = null
 var suspicion: float = 0.0
@@ -25,10 +40,9 @@ var game_over: bool = false
 var mask_active: String = ""
 ## 当前面具是否在警告时戴上（仅此时才具有规避监管效果）
 var mask_effective: bool = false
-## 主动面具数量（守卫+管家+舞者，总和最多 2）
-var guard_count: int = 0
-var butler_count: int = 0
-var dancer_count: int = 0
+## 主动面具槽位（"" | "guard" | "butler" | "dancer"），最多 2 个
+var slot_1: String = ""
+var slot_2: String = ""
 ## 公主面具数量（最多 1）
 var princess_count: int = 0
 ## 公主面具被动：可自动抵挡一次监管，剩余次数（= princess_count，逻辑上用 princess_charge 表示“可用次数”）
@@ -43,6 +57,7 @@ var _princess_used_this_eye: bool = false
 func _ready() -> void:
 	game_over_label.visible = false
 	_update_suspicion_bar(0.0)
+	_update_mask_slot_ui()
 	var DancerMaskScript = load("res://Script/dancer_mask.gd") as GDScript
 	dancer_mask = DancerMaskScript.new()
 	add_child(dancer_mask)
@@ -51,40 +66,59 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if game_over:
 		return
+	# 监管者睁眼时不可使用面具；其它时候均可使用；已戴面具时不再响应
+	if supervisor.is_eye_open or mask_active != "":
+		return
+	# 鼠标左键 = 使用槽位1，鼠标右键 = 使用槽位2
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if not mb.pressed:
+			return
+		if mb.button_index == MOUSE_BUTTON_LEFT:
+			_try_use_slot(1)
+			return
+		if mb.button_index == MOUSE_BUTTON_RIGHT:
+			_try_use_slot(2)
+			return
 	if not event is InputEventKey:
 		return
 	var key_event := event as InputEventKey
 	if not key_event.pressed or key_event.echo:
 		return
-	# 监管者睁眼时不可使用面具；其它时候均可使用；已戴面具时不再响应
-	if supervisor.is_eye_open or mask_active != "":
-		return
+	# 按键 1 = 槽位1，按键 2 = 槽位2
 	match key_event.keycode:
 		KEY_1, KEY_KP_1:
-			if guard_count <= 0:
-				print("没有守卫面具")
-				return
-			guard_count -= 1
-			mask_active = "guard"
-			mask_effective = supervisor.is_warning
-			character.movement_locked = true
-			print("戴上守卫面具（剩余 %d）%s" % [guard_count, "（警告时使用，生效）" if mask_effective else "（非警告时使用，本轮回避无效）"])
+			_try_use_slot(1)
 		KEY_2, KEY_KP_2:
-			if butler_count <= 0:
-				print("没有管家面具")
-				return
-			butler_count -= 1
-			mask_active = "butler"
-			mask_effective = supervisor.is_warning
-			print("戴上管家面具（剩余 %d）%s" % [butler_count, "（警告时使用，生效）" if mask_effective else "（非警告时使用，本轮回避无效）"])
-		KEY_4, KEY_KP_4:
-			if dancer_count <= 0:
-				print("没有舞者面具")
-				return
-			dancer_count -= 1
-			mask_active = "dancer"
-			mask_effective = supervisor.is_warning
-			print("戴上舞者面具（剩余 %d）%s" % [dancer_count, "（警告时使用，生效）" if mask_effective else "（非警告时使用，本轮回避无效）"])
+			_try_use_slot(2)
+
+func _try_use_slot(slot: int) -> void:
+	var s: String = slot_1 if slot == 1 else slot_2
+	if s.is_empty():
+		print("槽位%d为空" % slot)
+		return
+	mask_active = s
+	mask_effective = supervisor.is_warning
+	if slot == 1:
+		slot_1 = ""
+	else:
+		slot_2 = ""
+	_update_mask_slot_ui()
+	if mask_active == "guard":
+		character.movement_locked = true
+	print("戴上%s面具（槽位%d）%s" % [_mask_display_name(mask_active), slot, "（警告时使用，生效）" if mask_effective else "（非警告时使用，本轮回避无效）"])
+
+func _mask_display_name(mask_type_name: String) -> String:
+	match mask_type_name:
+		"guard": return "守卫"
+		"butler": return "管家"
+		"dancer": return "舞者"
+	return ""
+
+func _update_mask_slot_ui() -> void:
+	mask_slot_label_1.text = "槽位1：%s面具" % (_mask_display_name(slot_1) if slot_1 != "" else "空")
+	mask_slot_label_2.text = "槽位2：%s面具" % (_mask_display_name(slot_2) if slot_2 != "" else "空")
+	princess_label.visible = princess_count > 0
 
 func _process(delta: float) -> void:
 	if game_over:
@@ -123,14 +157,15 @@ func _process(delta: float) -> void:
 			print("公主面具自动抵挡一次监管")
 		if not skip_suspicion:
 			if _is_character_in_light_zone():
-				# 灯光下：3 秒内逐渐涨满，而不是瞬间满
-				var light_rate: float = 1.0 / SUSPICION_EYE_DURATION
+				# 灯光下：3 秒内逐渐涨到 suspicion_light_full
+				var light_rate: float = suspicion_light_full / suspicion_eye_duration
 				suspicion = minf(1.0, suspicion + delta * light_rate)
 			else:
-				suspicion = minf(1.0, suspicion + delta * SUSPICION_RATE_PER_SECOND)
+				var rate: float = suspicion_add_outside_light / suspicion_eye_duration
+				suspicion = minf(1.0, suspicion + delta * rate)
 
 	# 进度条动画：显示值追赶真实怀疑值
-	displayed_suspicion = lerpf(displayed_suspicion, suspicion, delta * SUSPICION_BAR_LERP_SPEED)
+	displayed_suspicion = lerpf(displayed_suspicion, suspicion, delta * suspicion_bar_lerp_speed)
 	# 后端已满时保证显示值到 1.0，避免 lerp 因浮点永远到不了 1.0 导致不触发
 	if suspicion >= 1.0:
 		displayed_suspicion = 1.0
@@ -169,17 +204,13 @@ func _remove_mask() -> void:
 	character.movement_locked = false
 	_dancer_rhythm_triggered = false
 
-## 当前主动面具总数是否已达上限（2）
-func _active_mask_count() -> int:
-	return guard_count + butler_count + dancer_count
-
 ## 刺杀后能否获得该类型面具（主动最多 2，公主最多 1）
 func can_gain_mask_from_assassination(mask_type_name: String) -> bool:
 	if mask_type_name == "princess":
 		return princess_count < 1
-	return _active_mask_count() < 2
+	return slot_1 == "" or slot_2 == ""
 
-## 刺杀成功：获得对应面具并增加 25% 怀疑值
+## 刺杀成功：获得对应面具并增加怀疑值；槽位1空则填槽位1，否则槽位2空则填槽位2
 func add_mask_from_assassination(mask_type_name: String) -> void:
 	if mask_type_name == "princess":
 		if princess_count >= 1:
@@ -187,21 +218,19 @@ func add_mask_from_assassination(mask_type_name: String) -> void:
 		princess_count += 1
 		princess_charge += 1
 		print("获得公主面具（被动）")
+		_update_mask_slot_ui()
 	else:
-		if _active_mask_count() >= 2:
+		if slot_1 != "" and slot_2 != "":
 			return
-		match mask_type_name:
-			"guard":
-				guard_count += 1
-				print("获得守卫面具（%d/2）" % _active_mask_count())
-			"butler":
-				butler_count += 1
-				print("获得管家面具（%d/2）" % _active_mask_count())
-			"dancer":
-				dancer_count += 1
-				print("获得舞者面具（%d/2）" % _active_mask_count())
-	suspicion = minf(1.0, suspicion + 0.1)
-	print("刺杀行为，怀疑值+10%")
+		if slot_1 == "":
+			slot_1 = mask_type_name
+			print("获得%s面具（槽位1）" % _mask_display_name(mask_type_name))
+		else:
+			slot_2 = mask_type_name
+			print("获得%s面具（槽位2）" % _mask_display_name(mask_type_name))
+		_update_mask_slot_ui()
+	suspicion = minf(1.0, suspicion + suspicion_add_assassination)
+	print("刺杀行为，怀疑值+%.0f%%" % (suspicion_add_assassination * 100))
 
 func _on_dancer_mask_completed(result: Dictionary) -> void:
 	# 仅当本轮回避生效时（警告时戴上的舞者面具）才根据判定结果影响怀疑值
@@ -211,5 +240,5 @@ func _on_dancer_mask_completed(result: Dictionary) -> void:
 	if success:
 		print("舞者面具判定成功，怀疑值不增加")
 	else:
-		suspicion = minf(1.0, suspicion + 0.1)
-		print("舞者面具判定失败，怀疑值+10%")
+		suspicion = minf(1.0, suspicion + suspicion_add_dancer_fail)
+		print("舞者面具判定失败，怀疑值+%.0f%%" % (suspicion_add_dancer_fail * 100))
