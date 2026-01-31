@@ -5,6 +5,7 @@ extends Control
 @onready var start_button: Button = $StartButton
 @onready var help_button: Button = $HelpButton
 @onready var title_label: Label = $TitleLabel
+@onready var bgm_player: AudioStreamPlayer = $BGMPlayer
 
 func _ready() -> void:
 	# 连接按钮信号
@@ -13,6 +14,15 @@ func _ready() -> void:
 	
 	# 确保游戏未暂停
 	get_tree().paused = false
+	
+	# 设置背景音乐循环播放
+	if bgm_player.stream:
+		# 确保音乐会循环播放
+		if bgm_player.stream is AudioStreamOggVorbis:
+			bgm_player.stream.loop = true
+		# 如果autoplay没有自动播放，手动播放
+		if not bgm_player.playing:
+			bgm_player.play()
 
 ## 开始游戏按钮点击
 func _on_start_button_pressed() -> void:

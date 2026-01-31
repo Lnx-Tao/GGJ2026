@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://ciqidfoioy0ml"]
+[gd_scene load_steps=3 format=3 uid="uid://ciqidfoioy0ml"]
 
-[ext_resource type="Script" uid="uid://dpnjfylsk77c0" path="res://Script/main_menu.gd" id="1_main_menu"]
+[ext_resource type="Script" path="res://Script/main_menu.gd" id="1_main_menu"]
+[ext_resource type="AudioStream" uid="uid://dcgxyban2hhr6" path="res://Music/bgm0.ogg" id="2_bgm"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -61,13 +62,18 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -149.0
-offset_top = 38.0
-offset_right = 151.0
-offset_bottom = 98.0
+offset_left = -150.0
+offset_top = 10.0
+offset_right = 150.0
+offset_bottom = 70.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.8, 0.9, 1, 1)
 theme_override_font_sizes/font_size = 32
 text = "游戏帮助"
+
+[node name="BGMPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_bgm")
+autoplay = true
+bus = &"Master"
