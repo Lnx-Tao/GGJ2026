@@ -1,15 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://princess01"]
+[gd_scene load_steps=5 format=3 uid="uid://x4wdrd52b122"]
 
-[ext_resource type="Script" path="res://Script/enemy_princess.gd" id="1_script"]
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_rect"]
-size = Vector2(48, 48)
+[ext_resource type="Script" uid="uid://cxeqr64481dir" path="res://Script/enemy_princess.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dsnx0vj3i0ihv" path="res://Art/princess.png" id="2_princess_texture"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_idle"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("PlaceholderTexture2D_rect")
+"texture": ExtResource("2_princess_texture")
 }],
 "loop": true,
 "name": &"idle",
@@ -25,6 +23,8 @@ collision_mask = 0
 script = ExtResource("1_script")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(19.999998, -149)
+scale = Vector2(0.558, 0.558)
 sprite_frames = SubResource("SpriteFrames_idle")
 animation = &"idle"
 
