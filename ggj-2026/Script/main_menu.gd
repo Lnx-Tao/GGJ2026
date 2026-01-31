@@ -2,9 +2,9 @@ extends Control
 
 ## 游戏主菜单控制器
 
-@onready var start_button: Button = $CenterContainer/VBoxContainer/StartButton
-@onready var help_button: Button = $CenterContainer/VBoxContainer/HelpButton
-@onready var title_label: Label = $CenterContainer/VBoxContainer/TitleLabel
+@onready var start_button: Button = $StartButton
+@onready var help_button: Button = $HelpButton
+@onready var title_label: Label = $TitleLabel
 
 func _ready() -> void:
 	# 连接按钮信号
