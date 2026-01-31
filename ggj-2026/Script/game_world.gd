@@ -11,12 +11,16 @@ const CHARACTER_SCREEN_X := 400
 @export_range(0.0, 1.0, 0.01) var suspicion_add_outside_light: float = 0.3
 ## 睁眼时「在灯光下」：3 秒内涨满，此处为“满”的目标值（一般保持 1.0）
 @export_range(0.0, 1.0, 0.01) var suspicion_light_full: float = 1.0
+## 睁眼时「玩家移动过」：3 秒内涨到的目标值（1.0 = 涨满，可单独调节）
+@export_range(0.0, 1.0, 0.01) var suspicion_moved_full: float = 1.0
 
 @export_group("怀疑值 - 其它")
 ## 每次刺杀成功增加的怀疑值（0.25 = 25%）
 @export_range(0.0, 1.0, 0.01) var suspicion_add_assassination: float = 0.25
 ## 舞者面具节奏判定失败增加的怀疑值（0.3 = 30%）
 @export_range(0.0, 1.0, 0.01) var suspicion_add_dancer_fail: float = 0.3
+## 公主面具被动触发一次后，后续所有怀疑值增长的倍率（1.2 = 涨 1.2 倍）
+@export_range(0.1, 5.0, 0.05) var suspicion_princess_used_multiplier: float = 1.2
 
 @export_group("怀疑值 - 进度条")
 ## 进度条显示值追赶真实怀疑值的速度（越大动画越快）
@@ -53,6 +57,14 @@ var _supervisor_was_eye_open: bool = false
 var _dancer_rhythm_triggered: bool = false
 ## 本轮睁眼是否已用过公主被动（只抵挡一次）
 var _princess_used_this_eye: bool = false
+## 本轮睁眼期间玩家是否移动过（用于无面具时：移动则怀疑值均匀涨满，不移动则正常增长）
+var _moved_during_eye_open: bool = false
+## 本轮睁眼已过时间（秒），用于“移动后补满”时按剩余时间算速率
+var _eye_open_elapsed: float = 0.0
+## 本局是否已被动触发过公主面具（触发后后续怀疑值增长乘 suspicion_princess_used_multiplier）
+var _princess_passive_ever_used: bool = false
+## 上一帧怀疑值，用于检测变化并输出到控制台
+var _last_suspicion: float = -1.0
 
 func _ready() -> void:
 	game_over_label.visible = false
@@ -131,6 +143,17 @@ func _process(delta: float) -> void:
 		_princess_used_this_eye = false
 	if not supervisor.is_eye_open:
 		_dancer_rhythm_triggered = false
+		_moved_during_eye_open = false
+		_eye_open_elapsed = 0.0
+	# 刚进入睁眼：重置“本轮是否移动”和睁眼计时
+	if supervisor.is_eye_open and not _supervisor_was_eye_open:
+		_moved_during_eye_open = false
+		_eye_open_elapsed = 0.0
+	# 睁眼期间：累计已过时间；有位移或正在按移动键都记为“移动过”（避免 velocity 晚一帧导致漏判）
+	if supervisor.is_eye_open:
+		_eye_open_elapsed += delta
+		if abs(character.velocity.x) > 0.1 or Input.is_action_pressed("ui_select"):
+			_moved_during_eye_open = true
 	_supervisor_was_eye_open = supervisor.is_eye_open
 
 	# 相机跟随
@@ -150,30 +173,50 @@ func _process(delta: float) -> void:
 			# 本轮睁眼已用过公主被动，整轮 3 秒内都不增加怀疑值
 			skip_suspicion = true
 		elif mask_active == "" and princess_charge > 0 and not _princess_used_this_eye:
-			# 公主被动：消耗一次公主面具抵挡本轮
+			# 公主被动：消耗一次公主面具抵挡本轮；之后所有怀疑值增长乘倍率
 			princess_charge -= 1
 			_princess_used_this_eye = true
+			_princess_passive_ever_used = true
 			skip_suspicion = true
 			print("公主面具自动抵挡一次监管")
 		if not skip_suspicion:
+			var mult: float = _suspicion_growth_multiplier()
 			if _is_character_in_light_zone():
-				# 灯光下：3 秒内逐渐涨到 suspicion_light_full
+				# 灯光下：3 秒内逐渐涨满
 				var light_rate: float = suspicion_light_full / suspicion_eye_duration
-				suspicion = minf(1.0, suspicion + delta * light_rate)
+				suspicion = minf(1.0, suspicion + delta * light_rate * mult)
+			elif _moved_during_eye_open:
+				# 未戴面具且本轮移动过：按剩余时间算速率，保证 3 秒结束时涨到 suspicion_moved_full（避免“晚移动”时涨不满）
+				var remaining: float = maxf(0.001, suspicion_eye_duration - _eye_open_elapsed)
+				var need: float = suspicion_moved_full - suspicion
+				var rate: float = need / remaining if need > 0.0 else 0.0
+				suspicion = minf(1.0, suspicion + delta * rate * mult)
 			else:
+				# 未戴面具且未移动：正常增长（如 10% / 3 秒，由 suspicion_add_outside_light 控制）
 				var rate: float = suspicion_add_outside_light / suspicion_eye_duration
-				suspicion = minf(1.0, suspicion + delta * rate)
+				suspicion = minf(1.0, suspicion + delta * rate * mult)
 
 	# 进度条动画：显示值追赶真实怀疑值
 	displayed_suspicion = lerpf(displayed_suspicion, suspicion, delta * suspicion_bar_lerp_speed)
-	# 后端已满时保证显示值到 1.0，避免 lerp 因浮点永远到不了 1.0 导致不触发
-	if suspicion >= 1.0:
+	# 后端已满（或浮点接近满）时强制显示 1.0，避免浮点误差导致游戏失败 UI 不触发
+	if suspicion >= 0.9999:
+		suspicion = 1.0
 		displayed_suspicion = 1.0
 	_update_suspicion_bar(displayed_suspicion)
 
-	# 仅当进度条涨满时才显示游戏失败 UI
-	if displayed_suspicion >= 1.0:
+	# 仅当进度条涨满时才显示游戏失败 UI（用 epsilon 避免浮点误差漏判）
+	if displayed_suspicion >= 0.9999:
 		_trigger_game_over()
+
+	# 怀疑值变化时输出到控制台（用 epsilon 避免浮点抖动刷屏）
+	if _last_suspicion < 0.0:
+		_last_suspicion = suspicion
+	elif abs(suspicion - _last_suspicion) > 0.0001:
+		print("怀疑值: %.2f (变化: %+.2f)" % [suspicion, suspicion - _last_suspicion])
+		_last_suspicion = suspicion
+
+func _suspicion_growth_multiplier() -> float:
+	return suspicion_princess_used_multiplier if _princess_passive_ever_used else 1.0
 
 func _is_character_in_light_zone() -> bool:
 	var pos := character.global_position
@@ -229,8 +272,9 @@ func add_mask_from_assassination(mask_type_name: String) -> void:
 			slot_2 = mask_type_name
 			print("获得%s面具（槽位2）" % _mask_display_name(mask_type_name))
 		_update_mask_slot_ui()
-	suspicion = minf(1.0, suspicion + suspicion_add_assassination)
-	print("刺杀行为，怀疑值+%.0f%%" % (suspicion_add_assassination * 100))
+	var add_val: float = suspicion_add_assassination * _suspicion_growth_multiplier()
+	suspicion = minf(1.0, suspicion + add_val)
+	print("刺杀行为，怀疑值+%.0f%%" % (add_val * 100))
 
 func _on_dancer_mask_completed(result: Dictionary) -> void:
 	# 仅当本轮回避生效时（警告时戴上的舞者面具）才根据判定结果影响怀疑值
@@ -240,5 +284,6 @@ func _on_dancer_mask_completed(result: Dictionary) -> void:
 	if success:
 		print("舞者面具判定成功，怀疑值不增加")
 	else:
-		suspicion = minf(1.0, suspicion + suspicion_add_dancer_fail)
-		print("舞者面具判定失败，怀疑值+%.0f%%" % (suspicion_add_dancer_fail * 100))
+		var add_val: float = suspicion_add_dancer_fail * _suspicion_growth_multiplier()
+		suspicion = minf(1.0, suspicion + add_val)
+		print("舞者面具判定失败，怀疑值+%.0f%%" % (add_val * 100))
