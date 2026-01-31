@@ -4,8 +4,8 @@ extends Node2D
 const CHARACTER_SCREEN_X := 400
 ## 摄像机向右跟随的最大距离（像素），超过后相机固定、角色仍可移动
 const CAMERA_TRAVEL_MAX := 3200.0
-## 接近木偶师的距离阈值（像素），在此距离内可刺杀
-const ASSASSINATE_DISTANCE := 150.0
+## 监管者刺杀范围所在碰撞层（与 Supervisor/AssassinateRange 的 collision_layer 一致）
+const SUPERVISOR_ASSASSINATE_LAYER := 4
 
 ## 以下怀疑值参数可在检查器中直接编辑（选中 GameWorld 节点）
 @export_group("怀疑值 - 睁眼时")
@@ -29,6 +29,7 @@ const ASSASSINATE_DISTANCE := 150.0
 @onready var camera: Camera2D = $Camera2D
 @onready var character: CharacterBody2D = $Character
 @onready var supervisor: Node2D = $Supervisor
+@onready var supervisor_assassinate_range: Area2D = $Supervisor/AssassinateRange
 @onready var curtain_controller: Control = $CurtainLayer/CurtainContainer
 @onready var suspicion_label: Label = $SuspicionUI/SuspicionLabel
 @onready var suspicion_bar_bg: ColorRect = $SuspicionUI/BarContainer/BarBackground
@@ -39,9 +40,11 @@ const ASSASSINATE_DISTANCE := 150.0
 @onready var victory_label: Label = $SuspicionUI/VictoryUI/VictoryContainer/VictoryLabel
 @onready var retry_button: Button = $SuspicionUI/VictoryUI/VictoryContainer/ButtonContainer/RetryButton
 @onready var main_menu_button: Button = $SuspicionUI/VictoryUI/VictoryContainer/ButtonContainer/MainMenuButton
-@onready var mask_slot_label_1: Label = $MaskSlotUI/Slot1Label
-@onready var mask_slot_label_2: Label = $MaskSlotUI/Slot2Label
-@onready var princess_label: Label = $MaskSlotUI/PrincessLabel
+@onready var slot1_image: TextureRect = $MaskSlotUI/Slot1Image
+@onready var slot1_type_label: Label = $MaskSlotUI/Slot1TypeLabel
+@onready var slot2_image: TextureRect = $MaskSlotUI/Slot2Image
+@onready var slot2_type_label: Label = $MaskSlotUI/Slot2TypeLabel
+@onready var slot3_image: TextureRect = $MaskSlotUI/Slot3Image
 
 var dancer_mask: Node = null
 var suspicion: float = 0.0
@@ -155,22 +158,49 @@ func _mask_display_name(mask_type_name: String) -> String:
 		"dancer": return "舞者"
 	return ""
 
+## 面具类型到图片路径（用于槽位 UI）
+const MASK_TEXTURE_PATHS: Dictionary = {
+	"guard": "res://Art/守卫面具.png",
+	"butler": "res://Art/管家面具.png",
+	"dancer": "res://Art/舞者面具.png",
+	"princess": "res://Art/公主面具.png"
+}
+
 func _update_mask_slot_ui() -> void:
-	mask_slot_label_1.text = "槽位1：%s面具" % (_mask_display_name(slot_1) if slot_1 != "" else "空")
-	mask_slot_label_2.text = "槽位2：%s面具" % (_mask_display_name(slot_2) if slot_2 != "" else "空")
-	princess_label.visible = princess_count > 0
+	slot1_image.texture = _mask_texture_for(slot_1)
+	slot2_image.texture = _mask_texture_for(slot_2)
+	slot3_image.texture = _mask_texture_for("princess") if princess_count > 0 else null
+	# 槽位1/槽位2 下方显示面具种类（守卫/管家/舞者），无面具则不显示
+	if slot_1.is_empty():
+		slot1_type_label.text = ""
+		slot1_type_label.visible = false
+	else:
+		slot1_type_label.text = _mask_display_name(slot_1)
+		slot1_type_label.visible = true
+	if slot_2.is_empty():
+		slot2_type_label.text = ""
+		slot2_type_label.visible = false
+	else:
+		slot2_type_label.text = _mask_display_name(slot_2)
+		slot2_type_label.visible = true
+
+func _mask_texture_for(mask_type: String) -> Texture2D:
+	if mask_type.is_empty():
+		return null
+	var path: String = MASK_TEXTURE_PATHS.get(mask_type, "")
+	if path.is_empty():
+		return null
+	return load(path) as Texture2D
 
 func _process(delta: float) -> void:
 	if game_over or game_victory:
 		return
 	if not is_instance_valid(character):
 		return
-	# 检测是否接近木偶师
-	var char_pos := character.global_position
-	var supervisor_pos := supervisor.global_position
-	var distance := char_pos.distance_to(supervisor_pos)
-	can_assassinate = distance <= ASSASSINATE_DISTANCE
+	# 检测玩家 AttackShape 与监管者 AssassinateRange（CollisionShape2D）是否重合
+	can_assassinate = _is_attack_shape_overlapping_supervisor_range()
 	assassinate_prompt.visible = can_assassinate
+	var char_pos := character.global_position
 	# 将提示显示在角色头顶（世界坐标转屏幕坐标）
 	if can_assassinate:
 		var world_offset := Vector2(0, -100)  # 角色头顶偏移
@@ -256,7 +286,7 @@ func _process(delta: float) -> void:
 	if suspicion >= 0.9999:
 		suspicion = 1.0
 		displayed_suspicion = 1.0
-	_update_suspicion_bar(displayed_suspicion)
+	_update_suspicion_bar(displayed_suspicion, suspicion)
 
 	# 仅当进度条涨满时才显示游戏失败 UI（用 epsilon 避免浮点误差漏判）
 	if displayed_suspicion >= 0.9999:
@@ -272,22 +302,51 @@ func _process(delta: float) -> void:
 func _suspicion_growth_multiplier() -> float:
 	return suspicion_princess_used_multiplier if _princess_passive_ever_used else 1.0
 
+## 玩家 AttackShape 与监管者 AssassinateRange（CollisionShape2D）是否重合
+func _is_attack_shape_overlapping_supervisor_range() -> bool:
+	if supervisor_assassinate_range == null:
+		return false
+	var attack_shape: CollisionShape2D = character.get("attack_shape") as CollisionShape2D
+	if attack_shape == null or attack_shape.shape == null:
+		return false
+	var space_state: PhysicsDirectSpaceState2D = get_world_2d().direct_space_state
+	if space_state == null:
+		return false
+	var params := PhysicsShapeQueryParameters2D.new()
+	params.shape = attack_shape.shape
+	params.transform = attack_shape.global_transform
+	params.collision_mask = SUPERVISOR_ASSASSINATE_LAYER
+	params.exclude = [character.get_rid()]
+	var results: Array[Dictionary] = space_state.intersect_shape(params)
+	for result in results:
+		if result.get("collider", null) == supervisor_assassinate_range:
+			return true
+	return false
+
 func _is_character_in_light_zone() -> bool:
-	var pos := character.global_position
+	# 角色 BodyShape 矩形与灯光 Sprite2D 区域有重合即算在灯光内
+	var char_rect: Rect2
+	if character.has_method("get_body_shape_global_rect"):
+		char_rect = character.get_body_shape_global_rect()
+	else:
+		char_rect = Rect2(character.global_position, Vector2(1, 1))
 	for node in get_tree().get_nodes_in_group("light"):
 		if node.has_method("get_zone_rect"):
-			if node.get_zone_rect().has_point(pos):
+			var light_rect: Rect2 = node.get_zone_rect()
+			if char_rect.intersects(light_rect):
 				return true
 	return false
 
-func _update_suspicion_bar(amount: float) -> void:
-	var w: float = suspicion_bar_bg.size.x * clampf(amount, 0.0, 1.0)
+func _update_suspicion_bar(bar_amount: float, text_value: float = -1.0) -> void:
+	var amount: float = clampf(bar_amount, 0.0, 1.0)
+	var w: float = suspicion_bar_bg.size.x * amount
 	suspicion_bar_fill.offset_left = 0.0
 	suspicion_bar_fill.offset_right = w
 	suspicion_bar_fill.offset_top = 0.0
 	suspicion_bar_fill.offset_bottom = suspicion_bar_bg.size.y
-	# 更新怀疑值文本显示（0-100）
-	var suspicion_value: int = int(clampf(amount, 0.0, 1.0) * 100.0)
+	# 文本显示用真实怀疑值（四舍五入），避免 lerp 导致 25 显示成 24、30 显示成 29
+	var v: float = clampf(text_value if text_value >= 0.0 else bar_amount, 0.0, 1.0)
+	var suspicion_value: int = int(roundf(v * 100.0))
 	suspicion_label.text = str(suspicion_value) + "/100"
 
 func _trigger_game_over() -> void:
@@ -323,6 +382,9 @@ func _remove_mask() -> void:
 	if mask_active == "":
 		return
 	print("摘下面具")
+	# 先触发角色形象由伪装渐淡、原形象由虚变实（若角色支持）
+	if character.has_method("unmask_visual"):
+		character.unmask_visual()
 	mask_active = ""
 	mask_effective = false
 	character.movement_locked = false

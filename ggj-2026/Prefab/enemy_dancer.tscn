@@ -75,7 +75,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
-size = Vector2(48, 48)
+size = Vector2(95, 235)
 
 [node name="Dancer" type="StaticBody2D"]
 collision_layer = 2
@@ -88,6 +88,8 @@ scale = Vector2(0.41, 0.41)
 sprite_frames = SubResource("SpriteFrames_idle")
 animation = &"idle"
 autoplay = "idle"
+frame_progress = 0.50350624
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(3.5, -94.5)
 shape = SubResource("RectangleShape2D_body")

@@ -1,0 +1,379 @@
+[gd_resource type="SpriteFrames" load_steps=92 format=3 uid="uid://dbrfghboq0orv"]
+
+[ext_resource type="Texture2D" uid="uid://1farnbh5hppi" path="res://Art/傀儡师动画_0030_图层 91.jpg" id="1_8bckw"]
+[ext_resource type="Texture2D" uid="uid://nbtn3iqrpvxu" path="res://Art/傀儡师动画_0031_图层 90.jpg" id="2_56hjj"]
+[ext_resource type="Texture2D" uid="uid://b3obys6vlklcr" path="res://Art/傀儡师动画_0032_图层 89.jpg" id="3_334fa"]
+[ext_resource type="Texture2D" uid="uid://b50bi4ovkjc6a" path="res://Art/傀儡师动画_0033_图层 88.jpg" id="4_whbw6"]
+[ext_resource type="Texture2D" uid="uid://byris0o84oyyr" path="res://Art/傀儡师动画_0034_图层 87.jpg" id="5_bychh"]
+[ext_resource type="Texture2D" uid="uid://erusn2y7vvfh" path="res://Art/傀儡师动画_0035_图层 86.jpg" id="6_tv271"]
+[ext_resource type="Texture2D" uid="uid://dxolcmqm2atsb" path="res://Art/傀儡师动画_0036_图层 85.jpg" id="7_r6ogp"]
+[ext_resource type="Texture2D" uid="uid://bl8hfrlrt6jch" path="res://Art/傀儡师动画_0037_图层 84.jpg" id="8_sg776"]
+[ext_resource type="Texture2D" uid="uid://br0kh0h16mws0" path="res://Art/傀儡师动画_0038_图层 83.jpg" id="9_tgivp"]
+[ext_resource type="Texture2D" uid="uid://bytnhe4uiqbru" path="res://Art/傀儡师动画_0039_图层 82.jpg" id="10_und7g"]
+[ext_resource type="Texture2D" uid="uid://cjk87jgd2wj5r" path="res://Art/傀儡师动画_0040_图层 81.jpg" id="11_wd5s8"]
+[ext_resource type="Texture2D" uid="uid://yfm8l17juy8f" path="res://Art/傀儡师动画_0041_图层 80.jpg" id="12_2myhi"]
+[ext_resource type="Texture2D" uid="uid://c41hji0xkvpmk" path="res://Art/傀儡师动画_0042_图层 79.jpg" id="13_i1x1k"]
+[ext_resource type="Texture2D" uid="uid://2jjjj3ms70xa" path="res://Art/傀儡师动画_0043_图层 78.jpg" id="14_ad008"]
+[ext_resource type="Texture2D" uid="uid://bv3qu2q67lwa2" path="res://Art/傀儡师动画_0044_图层 77.jpg" id="15_nth4r"]
+[ext_resource type="Texture2D" uid="uid://bilxc21d5tnqw" path="res://Art/傀儡师动画_0045_图层 76.jpg" id="16_ty2h1"]
+[ext_resource type="Texture2D" uid="uid://ctyy8ea3opr7t" path="res://Art/傀儡师动画_0046_图层 75.jpg" id="17_161w1"]
+[ext_resource type="Texture2D" uid="uid://b2wdi0hgncmjw" path="res://Art/傀儡师动画_0047_图层 74.jpg" id="18_y62g7"]
+[ext_resource type="Texture2D" uid="uid://dqqp77giv33n6" path="res://Art/傀儡师动画_0048_图层 73.jpg" id="19_wooo7"]
+[ext_resource type="Texture2D" uid="uid://cvi8ix62fbcw6" path="res://Art/傀儡师动画_0049_图层 72.jpg" id="20_rqhpa"]
+[ext_resource type="Texture2D" uid="uid://daflgqymmhef" path="res://Art/傀儡师动画_0050_图层 71.jpg" id="21_myd5e"]
+[ext_resource type="Texture2D" uid="uid://clh42k50vgmfr" path="res://Art/傀儡师动画_0051_图层 70.jpg" id="22_iy21l"]
+[ext_resource type="Texture2D" uid="uid://dryl7komq5rin" path="res://Art/傀儡师动画_0052_图层 69.jpg" id="23_fux54"]
+[ext_resource type="Texture2D" uid="uid://q4qvyx1f1vcs" path="res://Art/傀儡师动画_0053_图层 68.jpg" id="24_vwel6"]
+[ext_resource type="Texture2D" uid="uid://bs3r0udaqoi1s" path="res://Art/傀儡师动画_0054_图层 67.jpg" id="25_pbtda"]
+[ext_resource type="Texture2D" uid="uid://djxmgfv2n3q8h" path="res://Art/傀儡师动画_0055_图层 66.jpg" id="26_cxerq"]
+[ext_resource type="Texture2D" uid="uid://bjq8klpuak1sd" path="res://Art/傀儡师动画_0056_图层 65.jpg" id="27_tl1qh"]
+[ext_resource type="Texture2D" uid="uid://dx24chacv1vr6" path="res://Art/傀儡师动画_0057_图层 64.jpg" id="28_yjb3k"]
+[ext_resource type="Texture2D" uid="uid://dit7jaumy6n1s" path="res://Art/傀儡师动画_0058_图层 63.jpg" id="29_3wn84"]
+[ext_resource type="Texture2D" uid="uid://umj3cc20bxpf" path="res://Art/傀儡师动画_0059_图层 62.jpg" id="30_td3rr"]
+[ext_resource type="Texture2D" uid="uid://16drgd6um1i3" path="res://Art/傀儡师动画_0060_图层 61.jpg" id="31_eigv3"]
+[ext_resource type="Texture2D" uid="uid://dff7gx003jw1d" path="res://Art/傀儡师动画_0061_图层 60.jpg" id="32_sj5bq"]
+[ext_resource type="Texture2D" uid="uid://txpe77kgb63x" path="res://Art/傀儡师动画_0062_图层 59.jpg" id="33_y3nrj"]
+[ext_resource type="Texture2D" uid="uid://d1kvaxl6ne4tl" path="res://Art/傀儡师动画_0063_图层 58.jpg" id="34_6n27d"]
+[ext_resource type="Texture2D" uid="uid://bkytui2sd7cpk" path="res://Art/傀儡师动画_0064_图层 57.jpg" id="35_rwk2r"]
+[ext_resource type="Texture2D" uid="uid://dmbxdltnflemp" path="res://Art/傀儡师动画_0065_图层 56.jpg" id="36_4whr6"]
+[ext_resource type="Texture2D" uid="uid://e5ftwj53fh4y" path="res://Art/傀儡师动画_0066_图层 55.jpg" id="37_l61da"]
+[ext_resource type="Texture2D" uid="uid://brcy8j4ovqgs0" path="res://Art/傀儡师动画_0067_图层 54.jpg" id="38_1txeq"]
+[ext_resource type="Texture2D" uid="uid://dtv8gmyefnqn2" path="res://Art/傀儡师动画_0068_图层 53.jpg" id="39_f0epc"]
+[ext_resource type="Texture2D" uid="uid://7biplgl3ehdo" path="res://Art/傀儡师动画_0069_图层 52.jpg" id="40_o0a74"]
+[ext_resource type="Texture2D" uid="uid://bthksmx66p1g4" path="res://Art/傀儡师动画_0070_图层 51.jpg" id="41_6rlca"]
+[ext_resource type="Texture2D" uid="uid://mux15kh7l4bc" path="res://Art/傀儡师动画_0071_图层 50.jpg" id="42_e0kg6"]
+[ext_resource type="Texture2D" uid="uid://dy02mvvetcjlt" path="res://Art/傀儡师动画_0072_图层 49.jpg" id="43_mg354"]
+[ext_resource type="Texture2D" uid="uid://eeefy34r2rus" path="res://Art/傀儡师动画_0073_图层 48.jpg" id="44_5rv5v"]
+[ext_resource type="Texture2D" uid="uid://clcm1hfkae3x3" path="res://Art/傀儡师动画_0074_图层 47.jpg" id="45_5d7ck"]
+[ext_resource type="Texture2D" uid="uid://drivamv621cvg" path="res://Art/傀儡师动画_0075_图层 46.jpg" id="46_2cd5e"]
+[ext_resource type="Texture2D" uid="uid://crm1qw20v7h45" path="res://Art/傀儡师动画_0076_图层 45.jpg" id="47_5tuvj"]
+[ext_resource type="Texture2D" uid="uid://brl0j6qqnryu4" path="res://Art/傀儡师动画_0077_图层 44.jpg" id="48_ty50p"]
+[ext_resource type="Texture2D" uid="uid://lsrwmppd8obd" path="res://Art/傀儡师动画_0078_图层 43.jpg" id="49_8vbq2"]
+[ext_resource type="Texture2D" uid="uid://cij8beq4rvi51" path="res://Art/傀儡师动画_0079_图层 42.jpg" id="50_mdd52"]
+[ext_resource type="Texture2D" uid="uid://b40ny8pfdkuap" path="res://Art/傀儡师动画_0080_图层 41.jpg" id="51_0f1wi"]
+[ext_resource type="Texture2D" uid="uid://dyauegqv02rxs" path="res://Art/傀儡师动画_0081_图层 40.jpg" id="52_ssqhg"]
+[ext_resource type="Texture2D" uid="uid://bkgh4eukgwbv" path="res://Art/傀儡师动画_0082_图层 39.jpg" id="53_dou4q"]
+[ext_resource type="Texture2D" uid="uid://dtfu5o6ekh6o0" path="res://Art/傀儡师动画_0083_图层 38.jpg" id="54_xlatl"]
+[ext_resource type="Texture2D" uid="uid://d7mragn7625y" path="res://Art/傀儡师动画_0084_图层 37.jpg" id="55_lenl2"]
+[ext_resource type="Texture2D" uid="uid://bpa28wxmlnwvs" path="res://Art/傀儡师动画_0085_图层 36.jpg" id="56_2b7uh"]
+[ext_resource type="Texture2D" uid="uid://qg7emv63lgxn" path="res://Art/傀儡师动画_0086_图层 35.jpg" id="57_iccj4"]
+[ext_resource type="Texture2D" uid="uid://c1u22d3spcivr" path="res://Art/傀儡师动画_0087_图层 34.jpg" id="58_sxcut"]
+[ext_resource type="Texture2D" uid="uid://c232iaqmt8jxf" path="res://Art/傀儡师动画_0088_图层 33.jpg" id="59_jhrpj"]
+[ext_resource type="Texture2D" uid="uid://c6ayibnvc7wr3" path="res://Art/傀儡师动画_0089_图层 32.jpg" id="60_1rlr1"]
+[ext_resource type="Texture2D" uid="uid://i7opahgqhows" path="res://Art/傀儡师动画_0090_图层 31.jpg" id="61_7gogk"]
+[ext_resource type="Texture2D" uid="uid://cebd8poo4nrp1" path="res://Art/傀儡师动画_0091_图层 30.jpg" id="62_g2shj"]
+[ext_resource type="Texture2D" uid="uid://4837ng1nckgf" path="res://Art/傀儡师动画_0092_图层 29.jpg" id="63_akonv"]
+[ext_resource type="Texture2D" uid="uid://bplm0e5cqqwg3" path="res://Art/傀儡师动画_0093_图层 28.jpg" id="64_fxr7s"]
+[ext_resource type="Texture2D" uid="uid://xuaxbopj3254" path="res://Art/傀儡师动画_0094_图层 27.jpg" id="65_5cdcw"]
+[ext_resource type="Texture2D" uid="uid://dg828o1qwnvws" path="res://Art/傀儡师动画_0095_图层 26.jpg" id="66_161y6"]
+[ext_resource type="Texture2D" uid="uid://dbsqikfaoxwvq" path="res://Art/傀儡师动画_0096_图层 25.jpg" id="67_0wsl2"]
+[ext_resource type="Texture2D" uid="uid://c82kduc8uhedg" path="res://Art/傀儡师动画_0097_图层 24.jpg" id="68_2blan"]
+[ext_resource type="Texture2D" uid="uid://ccuyc60n3ymrh" path="res://Art/傀儡师动画_0098_图层 23.jpg" id="69_h773m"]
+[ext_resource type="Texture2D" uid="uid://dw0fgw4n54p8c" path="res://Art/傀儡师动画_0099_图层 22.jpg" id="70_x4tgq"]
+[ext_resource type="Texture2D" uid="uid://bqgmvl5lc4xf" path="res://Art/傀儡师动画_0100_图层 21.jpg" id="71_6fbv7"]
+[ext_resource type="Texture2D" uid="uid://2sal27orlns6" path="res://Art/傀儡师动画_0101_图层 20.jpg" id="72_n0jn2"]
+[ext_resource type="Texture2D" uid="uid://p1nyfuwilkru" path="res://Art/傀儡师动画_0102_图层 19.jpg" id="73_6oxwj"]
+[ext_resource type="Texture2D" uid="uid://dabfgak1npb64" path="res://Art/傀儡师动画_0103_图层 18.jpg" id="74_qpfc2"]
+[ext_resource type="Texture2D" uid="uid://cdk6dbrex1xiq" path="res://Art/傀儡师动画_0104_图层 17.jpg" id="75_43im1"]
+[ext_resource type="Texture2D" uid="uid://6pfp1br2tms" path="res://Art/傀儡师动画_0105_图层 16.jpg" id="76_1243o"]
+[ext_resource type="Texture2D" uid="uid://b7aiyvw6yjufy" path="res://Art/傀儡师动画_0106_图层 15.jpg" id="77_sbqpv"]
+[ext_resource type="Texture2D" uid="uid://c8eubgk5wkyhu" path="res://Art/傀儡师动画_0107_图层 14.jpg" id="78_ixevw"]
+[ext_resource type="Texture2D" uid="uid://bdry7pitix67e" path="res://Art/傀儡师动画_0108_图层 13.jpg" id="79_mndwr"]
+[ext_resource type="Texture2D" uid="uid://dje3u55lip74f" path="res://Art/傀儡师动画_0109_图层 12.jpg" id="80_0pdrf"]
+[ext_resource type="Texture2D" uid="uid://xwlmtppqnhfj" path="res://Art/傀儡师动画_0110_图层 11.jpg" id="81_y57io"]
+[ext_resource type="Texture2D" uid="uid://byfs22nm1geh" path="res://Art/傀儡师动画_0111_图层 10.jpg" id="82_6r06f"]
+[ext_resource type="Texture2D" uid="uid://dlf3iji7r6ghk" path="res://Art/傀儡师动画_0112_图层 9.jpg" id="83_yvwv5"]
+[ext_resource type="Texture2D" uid="uid://drli5blvp8siv" path="res://Art/傀儡师动画_0113_图层 8.jpg" id="84_rqxf2"]
+[ext_resource type="Texture2D" uid="uid://c5p0d276qvkcw" path="res://Art/傀儡师动画_0114_图层 7.jpg" id="85_xd5v7"]
+[ext_resource type="Texture2D" uid="uid://cwxt8pjhqa5y8" path="res://Art/傀儡师动画_0115_图层 6.jpg" id="86_bfnnh"]
+[ext_resource type="Texture2D" uid="uid://dq1kwfn347msn" path="res://Art/傀儡师动画_0116_图层 5.jpg" id="87_5ajlp"]
+[ext_resource type="Texture2D" uid="uid://7y845xqbbk5k" path="res://Art/傀儡师动画_0117_图层 4.jpg" id="88_e6euv"]
+[ext_resource type="Texture2D" uid="uid://buxnt0pjsp5ie" path="res://Art/傀儡师动画_0118_图层 3.jpg" id="89_872u6"]
+[ext_resource type="Texture2D" uid="uid://bnqx07kg2hj7a" path="res://Art/傀儡师动画_0119_图层 2.jpg" id="90_ov442"]
+[ext_resource type="Texture2D" uid="uid://bjl10qjg3lqq0" path="res://Art/傀儡师动画_0120_图层 1.jpg" id="91_qdi7k"]
+
+[resource]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 0.1,
+"texture": ExtResource("1_8bckw")
+}, {
+"duration": 0.1,
+"texture": ExtResource("2_56hjj")
+}, {
+"duration": 0.1,
+"texture": ExtResource("3_334fa")
+}, {
+"duration": 0.1,
+"texture": ExtResource("4_whbw6")
+}, {
+"duration": 0.1,
+"texture": ExtResource("5_bychh")
+}, {
+"duration": 0.1,
+"texture": ExtResource("6_tv271")
+}, {
+"duration": 0.1,
+"texture": ExtResource("7_r6ogp")
+}, {
+"duration": 0.1,
+"texture": ExtResource("8_sg776")
+}, {
+"duration": 0.1,
+"texture": ExtResource("9_tgivp")
+}, {
+"duration": 0.1,
+"texture": ExtResource("10_und7g")
+}, {
+"duration": 0.1,
+"texture": ExtResource("11_wd5s8")
+}, {
+"duration": 0.1,
+"texture": ExtResource("12_2myhi")
+}, {
+"duration": 0.1,
+"texture": ExtResource("13_i1x1k")
+}, {
+"duration": 0.1,
+"texture": ExtResource("14_ad008")
+}, {
+"duration": 0.1,
+"texture": ExtResource("15_nth4r")
+}, {
+"duration": 0.1,
+"texture": ExtResource("16_ty2h1")
+}, {
+"duration": 0.1,
+"texture": ExtResource("17_161w1")
+}, {
+"duration": 0.1,
+"texture": ExtResource("18_y62g7")
+}, {
+"duration": 0.1,
+"texture": ExtResource("19_wooo7")
+}, {
+"duration": 0.1,
+"texture": ExtResource("20_rqhpa")
+}, {
+"duration": 0.1,
+"texture": ExtResource("21_myd5e")
+}, {
+"duration": 0.1,
+"texture": ExtResource("22_iy21l")
+}, {
+"duration": 0.1,
+"texture": ExtResource("23_fux54")
+}, {
+"duration": 0.1,
+"texture": ExtResource("24_vwel6")
+}, {
+"duration": 0.1,
+"texture": ExtResource("25_pbtda")
+}, {
+"duration": 0.1,
+"texture": ExtResource("26_cxerq")
+}, {
+"duration": 0.1,
+"texture": ExtResource("27_tl1qh")
+}, {
+"duration": 0.1,
+"texture": ExtResource("28_yjb3k")
+}, {
+"duration": 0.1,
+"texture": ExtResource("29_3wn84")
+}, {
+"duration": 0.1,
+"texture": ExtResource("30_td3rr")
+}, {
+"duration": 0.1,
+"texture": ExtResource("31_eigv3")
+}, {
+"duration": 0.1,
+"texture": ExtResource("32_sj5bq")
+}, {
+"duration": 0.1,
+"texture": ExtResource("33_y3nrj")
+}, {
+"duration": 0.1,
+"texture": ExtResource("34_6n27d")
+}, {
+"duration": 0.1,
+"texture": ExtResource("35_rwk2r")
+}, {
+"duration": 0.1,
+"texture": ExtResource("36_4whr6")
+}, {
+"duration": 0.1,
+"texture": ExtResource("37_l61da")
+}, {
+"duration": 0.1,
+"texture": ExtResource("38_1txeq")
+}, {
+"duration": 0.1,
+"texture": ExtResource("39_f0epc")
+}, {
+"duration": 0.1,
+"texture": ExtResource("40_o0a74")
+}, {
+"duration": 0.1,
+"texture": ExtResource("41_6rlca")
+}, {
+"duration": 0.1,
+"texture": ExtResource("42_e0kg6")
+}, {
+"duration": 0.1,
+"texture": ExtResource("43_mg354")
+}, {
+"duration": 0.1,
+"texture": ExtResource("44_5rv5v")
+}, {
+"duration": 0.1,
+"texture": ExtResource("45_5d7ck")
+}, {
+"duration": 0.1,
+"texture": ExtResource("46_2cd5e")
+}, {
+"duration": 0.1,
+"texture": ExtResource("47_5tuvj")
+}, {
+"duration": 0.1,
+"texture": ExtResource("48_ty50p")
+}, {
+"duration": 0.1,
+"texture": ExtResource("49_8vbq2")
+}, {
+"duration": 0.1,
+"texture": ExtResource("50_mdd52")
+}, {
+"duration": 0.1,
+"texture": ExtResource("51_0f1wi")
+}, {
+"duration": 0.1,
+"texture": ExtResource("52_ssqhg")
+}, {
+"duration": 0.1,
+"texture": ExtResource("53_dou4q")
+}, {
+"duration": 0.1,
+"texture": ExtResource("54_xlatl")
+}, {
+"duration": 0.1,
+"texture": ExtResource("55_lenl2")
+}, {
+"duration": 0.1,
+"texture": ExtResource("56_2b7uh")
+}, {
+"duration": 0.1,
+"texture": ExtResource("57_iccj4")
+}, {
+"duration": 0.1,
+"texture": ExtResource("58_sxcut")
+}, {
+"duration": 0.1,
+"texture": ExtResource("59_jhrpj")
+}, {
+"duration": 0.1,
+"texture": ExtResource("60_1rlr1")
+}, {
+"duration": 0.1,
+"texture": ExtResource("61_7gogk")
+}, {
+"duration": 0.1,
+"texture": ExtResource("62_g2shj")
+}, {
+"duration": 0.1,
+"texture": ExtResource("63_akonv")
+}, {
+"duration": 0.1,
+"texture": ExtResource("64_fxr7s")
+}, {
+"duration": 0.1,
+"texture": ExtResource("65_5cdcw")
+}, {
+"duration": 0.1,
+"texture": ExtResource("66_161y6")
+}, {
+"duration": 0.1,
+"texture": ExtResource("67_0wsl2")
+}, {
+"duration": 0.1,
+"texture": ExtResource("68_2blan")
+}, {
+"duration": 0.1,
+"texture": ExtResource("69_h773m")
+}, {
+"duration": 0.1,
+"texture": ExtResource("70_x4tgq")
+}, {
+"duration": 0.1,
+"texture": ExtResource("71_6fbv7")
+}, {
+"duration": 0.1,
+"texture": ExtResource("72_n0jn2")
+}, {
+"duration": 0.1,
+"texture": ExtResource("73_6oxwj")
+}, {
+"duration": 0.1,
+"texture": ExtResource("74_qpfc2")
+}, {
+"duration": 0.1,
+"texture": ExtResource("75_43im1")
+}, {
+"duration": 0.1,
+"texture": ExtResource("76_1243o")
+}, {
+"duration": 0.1,
+"texture": ExtResource("77_sbqpv")
+}, {
+"duration": 0.1,
+"texture": ExtResource("78_ixevw")
+}, {
+"duration": 0.1,
+"texture": ExtResource("79_mndwr")
+}, {
+"duration": 0.1,
+"texture": ExtResource("80_0pdrf")
+}, {
+"duration": 0.1,
+"texture": ExtResource("81_y57io")
+}, {
+"duration": 0.1,
+"texture": ExtResource("82_6r06f")
+}, {
+"duration": 0.1,
+"texture": ExtResource("83_yvwv5")
+}, {
+"duration": 0.1,
+"texture": ExtResource("84_rqxf2")
+}, {
+"duration": 0.1,
+"texture": ExtResource("85_xd5v7")
+}, {
+"duration": 0.1,
+"texture": ExtResource("86_bfnnh")
+}, {
+"duration": 0.1,
+"texture": ExtResource("87_5ajlp")
+}, {
+"duration": 0.1,
+"texture": ExtResource("88_e6euv")
+}, {
+"duration": 0.1,
+"texture": ExtResource("89_872u6")
+}, {
+"duration": 0.1,
+"texture": ExtResource("90_ov442")
+}, {
+"duration": 0.1,
+"texture": ExtResource("91_qdi7k")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 10.0
+}]

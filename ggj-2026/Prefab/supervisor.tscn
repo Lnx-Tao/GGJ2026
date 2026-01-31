@@ -1,27 +1,21 @@
-[gd_scene load_steps=5 format=3 uid="uid://supervisor01"]
+[gd_scene load_steps=3 format=3 uid="uid://supervisor01"]
 
-[ext_resource type="Script" path="res://Script/supervisor.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://b55ovpmb0jgpr" path="res://Script/supervisor.gd" id="1_script"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_rect"]
-size = Vector2(64, 64)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_idle"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("PlaceholderTexture2D_rect")
-}],
-"loop": true,
-"name": &"idle",
-"speed": 5.0
-}]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_range"]
+size = Vector2(120, 200)
 
 [node name="Supervisor" type="Node2D"]
 script = ExtResource("1_script")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-sprite_frames = SubResource("SpriteFrames_idle")
-animation = &"idle"
+[node name="AssassinateRange" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AssassinateRange"]
+position = Vector2(0, -50)
+shape = SubResource("RectangleShape2D_range")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -44,6 +38,8 @@ offset_left = -80.0
 offset_top = -20.0
 offset_right = 80.0
 offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_font_sizes/font_size = 48
 text = "warning"
@@ -61,12 +57,14 @@ offset_left = -40.0
 offset_top = -30.0
 offset_right = 40.0
 offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="EyeSprite" type="ColorRect" parent="CanvasLayer/UIRoot/EyeContainer"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.2, 0.2, 0.25, 0.95)
 grow_horizontal = 2
 grow_vertical = 2
+color = Color(0.2, 0.2, 0.25, 0.95)

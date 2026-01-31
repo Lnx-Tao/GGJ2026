@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://t7h47rybksu5"]
+[gd_scene load_steps=20 format=3 uid="uid://t7h47rybksu5"]
 
 [ext_resource type="Script" uid="uid://nve7gepa1uvs" path="res://Script/game_world.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://503kg0miryk0" path="res://Prefab/character.tscn" id="2_character"]
@@ -6,8 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://princess01" path="res://Prefab/enemy_princess.tscn" id="4_princess"]
 [ext_resource type="PackedScene" uid="uid://guard001" path="res://Prefab/enemy_guard.tscn" id="5_guard"]
 [ext_resource type="PackedScene" uid="uid://butler001" path="res://Prefab/enemy_butler.tscn" id="6_butler"]
-[ext_resource type="PackedScene" path="res://Prefab/supervisor.tscn" id="7_supervisor"]
-[ext_resource type="PackedScene" path="res://Prefab/light.tscn" id="8_light"]
+[ext_resource type="PackedScene" uid="uid://supervisor01" path="res://Prefab/supervisor.tscn" id="7_supervisor"]
+[ext_resource type="PackedScene" uid="uid://light001" path="res://Prefab/light.tscn" id="8_light"]
 [ext_resource type="Texture2D" uid="uid://b4mhq4oj4hdrk" path="res://Art/background1.jpg" id="9_bg1"]
 [ext_resource type="Texture2D" uid="uid://cxfrfegaj12p3" path="res://Art/background2.jpg" id="10_bg2"]
 [ext_resource type="Texture2D" uid="uid://bj2n34suadwkv" path="res://Art/curtain1.png" id="11_curtain1"]
@@ -15,9 +15,10 @@
 [ext_resource type="Texture2D" uid="uid://bd44njrwbblxn" path="res://Art/curtain3.png" id="13_curtain3"]
 [ext_resource type="Texture2D" uid="uid://cxfgygwlj8un8" path="res://Art/curtain4.png" id="14_curtain4"]
 [ext_resource type="Texture2D" uid="uid://clqmauspx4k2w" path="res://Art/curtain5.png" id="15_curtain5"]
-[ext_resource type="Script" uid="uid://b5xei3m7f4vej" path="res://Script/curtain_controller.gd" id="16_curtain_script"]
+[ext_resource type="Script" path="res://Script/curtain_controller.gd" id="16_curtain_script"]
 [ext_resource type="AudioStream" uid="uid://rm10k8onrdiv" path="res://Music/bgm1.ogg" id="17_bgm"]
 [ext_resource type="Texture2D" uid="uid://be3iew0sbwec3" path="res://Art/qipao.png" id="18_qipao"]
+[ext_resource type="Texture2D" uid="uid://olkkkialq3i7" path="res://Art/怀疑值.png" id="19_suspicion_img"]
 
 [node name="GameWorld" type="Node2D"]
 script = ExtResource("1_script")
@@ -30,21 +31,21 @@ autoplay = true
 process_mode = 2
 layer = 10
 
+[node name="SuspicionImage" type="TextureRect" parent="SuspicionUI"]
+offset_right = 1600.0
+offset_bottom = 900.0
+texture = ExtResource("19_suspicion_img")
+expand_mode = 1
+stretch_mode = 1
+
 [node name="SuspicionLabel" type="Label" parent="SuspicionUI"]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -50.0
-offset_top = -64.0
-offset_right = 50.0
-offset_bottom = -44.0
-grow_horizontal = 2
-grow_vertical = 0
+offset_left = 154.0
+offset_top = 120.0
+offset_right = 250.0
+offset_bottom = 159.0
+scale = Vector2(2, 2)
 theme_override_font_sizes/font_size = 28
 text = "0/100"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BarContainer" type="Control" parent="SuspicionUI"]
@@ -225,42 +226,79 @@ texture = ExtResource("15_curtain5")
 stretch_mode = 6
 
 [node name="MaskSlotUI" type="CanvasLayer" parent="."]
+layer = 11
 
-[node name="SlotContainer" type="Control" parent="MaskSlotUI"]
-layout_mode = 3
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = -80.0
-offset_right = 500.0
-offset_bottom = -20.0
-grow_vertical = 0
+[node name="Slot1Image" type="TextureRect" parent="MaskSlotUI"]
+offset_left = 1021.6
+offset_top = 750.0
+offset_right = 1213.6
+offset_bottom = 858.0
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Slot1Label" type="Label" parent="MaskSlotUI"]
-offset_left = 20.0
-offset_top = 820.0
-offset_right = 240.0
-offset_bottom = 860.0
-theme_override_font_sizes/font_size = 24
-text = "槽位1：空面具"
+offset_left = 1077.6
+offset_top = 840.0
+offset_right = 1157.6
+offset_bottom = 871.0
+theme_override_font_sizes/font_size = 22
+text = "槽位1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot1TypeLabel" type="Label" parent="MaskSlotUI"]
+offset_left = 1077.6
+offset_top = 870.0
+offset_right = 1157.6
+offset_bottom = 898.0
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot2Image" type="TextureRect" parent="MaskSlotUI"]
+offset_left = 1175.6
+offset_top = 750.0
+offset_right = 1367.6
+offset_bottom = 858.0
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Slot2Label" type="Label" parent="MaskSlotUI"]
-offset_left = 260.0
-offset_top = 820.0
-offset_right = 480.0
-offset_bottom = 860.0
-theme_override_font_sizes/font_size = 24
-text = "槽位2：空面具"
+offset_left = 1231.6
+offset_top = 840.0
+offset_right = 1311.6
+offset_bottom = 871.0
+theme_override_font_sizes/font_size = 22
+text = "槽位2"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="PrincessLabel" type="Label" parent="MaskSlotUI"]
-visible = false
-offset_left = 20.0
-offset_top = 865.0
-offset_right = 200.0
-offset_bottom = 895.0
+[node name="Slot2TypeLabel" type="Label" parent="MaskSlotUI"]
+offset_left = 1231.6
+offset_top = 870.0
+offset_right = 1311.6
+offset_bottom = 898.0
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot3Image" type="TextureRect" parent="MaskSlotUI"]
+offset_left = 1406.0
+offset_top = 750.0
+offset_right = 1598.0
+offset_bottom = 858.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Slot3Label" type="Label" parent="MaskSlotUI"]
+offset_left = 1472.0
+offset_top = 840.0
+offset_right = 1560.0
+offset_bottom = 871.0
 theme_override_font_sizes/font_size = 22
 text = "公主面具"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 
@@ -285,14 +323,13 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("18_qipao")
 
 [node name="Supervisor" parent="." instance=ExtResource("7_supervisor")]
-position = Vector2(2358, 521)
+position = Vector2(4411, 713)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(800, 450)
 
 [node name="Character" parent="." instance=ExtResource("2_character")]
-position = Vector2(304.00003, 657.00006)
-scale = Vector2(0.8, 0.8)
+position = Vector2(325, 644)
 
 [node name="Dancer" parent="." instance=ExtResource("3_dancer")]
 position = Vector2(800, 744)
@@ -308,4 +345,4 @@ position = Vector2(2000, 744)
 scale = Vector2(1.4, 1.4)
 
 [node name="Light" parent="." instance=ExtResource("8_light")]
-position = Vector2(616, 709)
+position = Vector2(605, 709)
