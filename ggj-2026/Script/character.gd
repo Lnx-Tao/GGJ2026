@@ -1,7 +1,11 @@
 extends CharacterBody2D
 
-## 移动速度（像素/秒）
-@export var move_speed: float = 300.0
+## 以下参数可在检查器中直接编辑（选中玩家 Character 节点）
+@export_group("移动")
+## 移动速度（像素/秒），不戴面具时的速度
+@export_range(50.0, 800.0, 10.0) var move_speed: float = 300.0
+## 使用管家面具时的移动速度（像素/秒），可与不戴面具时不同
+@export_range(50.0, 800.0, 10.0) var butler_mask_move_speed: float = 180.0
 ## 为 true 时无法移动（如戴上守卫面具时由 game_world 设置）
 var movement_locked: bool = false
 
@@ -13,8 +17,15 @@ func _physics_process(_delta: float) -> void:
 	velocity.x = 0.0
 	velocity.y = 0.0
 	if not movement_locked and Input.is_action_pressed("ui_select"):  # 空格键
-		velocity.x = move_speed
+		var speed: float = _get_current_move_speed()
+		velocity.x = speed
 	move_and_slide()
+
+func _get_current_move_speed() -> float:
+	var gw = get_tree().current_scene
+	if gw != null and "mask_active" in gw and gw.mask_active == "butler":
+		return butler_mask_move_speed
+	return move_speed
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey:

@@ -2,14 +2,14 @@
 
 [ext_resource type="Script" path="res://Script/character.gd" id="1_script"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_rect"]
-size = Vector2(64, 64)
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_dot"]
+size = Vector2(1, 1)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_idle"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("PlaceholderTexture2D_rect")
+"texture": SubResource("PlaceholderTexture2D_dot")
 }],
 "loop": true,
 "name": &"idle",
