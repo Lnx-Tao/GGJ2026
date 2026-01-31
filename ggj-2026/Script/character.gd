@@ -10,8 +10,21 @@ extends CharacterBody2D
 var movement_locked: bool = false
 
 @onready var assassination_range: Area2D = $AttackRange
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+## 刺杀动画名称（需在角色的 SpriteFrames 里添加同名动画）
+const ANIM_ASSASSINATE: StringName = &"assassinate"
 ## 刺杀检测距离（若 Area2D 未检测到则用此距离找最近敌人）
 const ASSASSINATION_DISTANCE: float = 120.0
+
+func _ready() -> void:
+	if sprite.animation_finished.is_connected(_on_sprite_animation_finished):
+		return
+	sprite.animation_finished.connect(_on_sprite_animation_finished)
+
+func _on_sprite_animation_finished() -> void:
+	if sprite.animation == ANIM_ASSASSINATE and sprite.sprite_frames != null:
+		if sprite.sprite_frames.has_animation(&"default"):
+			sprite.play(&"default")
 
 func _physics_process(_delta: float) -> void:
 	velocity.x = 0.0
@@ -37,6 +50,9 @@ func try_assassinate() -> void:
 	var gw = get_tree().current_scene
 	if gw == null or not gw.has_method("can_gain_mask_from_assassination") or not gw.has_method("add_mask_from_assassination"):
 		return
+	# 若有刺杀动画则播放（需在 SpriteFrames 中添加名为 assassinate 的动画）
+	if sprite.sprite_frames != null and sprite.sprite_frames.has_animation(ANIM_ASSASSINATE):
+		sprite.play(ANIM_ASSASSINATE)
 	var bodies := assassination_range.get_overlapping_bodies()
 	for body in bodies:
 		if body == self:
