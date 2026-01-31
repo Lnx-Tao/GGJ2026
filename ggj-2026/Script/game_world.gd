@@ -156,8 +156,8 @@ func _process(delta: float) -> void:
 			_moved_during_eye_open = true
 	_supervisor_was_eye_open = supervisor.is_eye_open
 
-	# 相机跟随
-	camera.global_position = character.global_position + Vector2(800 - CHARACTER_SCREEN_X, 0.0)
+	# 相机跟随（只跟随x，y固定为450以保持背景铺满）
+	camera.global_position = Vector2(character.global_position.x + 800 - CHARACTER_SCREEN_X, 450.0)
 
 	# 监管者睁眼期间（3 秒）才计算怀疑值
 	if supervisor.is_eye_open:

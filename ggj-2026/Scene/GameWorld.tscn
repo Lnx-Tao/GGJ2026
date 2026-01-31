@@ -1,16 +1,15 @@
-[gd_scene load_steps=10 format=3 uid="uid://c6f1bby6ysc1w"]
+[gd_scene load_steps=11 format=3 uid="uid://t7h47rybksu5"]
 
 [ext_resource type="Script" uid="uid://qdj1h4807qvl" path="res://Script/game_world.gd" id="1_script"]
-[ext_resource type="PackedScene" uid="uid://503kg0miryk0" path="res://Prefab/character.tscn" id="2_character"]
-[ext_resource type="PackedScene" uid="uid://dancer001" path="res://Prefab/enemy_dancer.tscn" id="3_dancer"]
-[ext_resource type="PackedScene" uid="uid://princess01" path="res://Prefab/enemy_princess.tscn" id="4_princess"]
-[ext_resource type="PackedScene" uid="uid://guard001" path="res://Prefab/enemy_guard.tscn" id="5_guard"]
-[ext_resource type="PackedScene" uid="uid://butler001" path="res://Prefab/enemy_butler.tscn" id="6_butler"]
-[ext_resource type="PackedScene" uid="uid://supervisor01" path="res://Prefab/supervisor.tscn" id="7_supervisor"]
-[ext_resource type="PackedScene" uid="uid://ci5slcy8fh2o6" path="res://Prefab/light.tscn" id="8_light"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
-size = Vector2(20000, 200)
+[ext_resource type="PackedScene" path="res://Prefab/character.tscn" id="2_character"]
+[ext_resource type="PackedScene" path="res://Prefab/enemy_dancer.tscn" id="3_dancer"]
+[ext_resource type="PackedScene" path="res://Prefab/enemy_princess.tscn" id="4_princess"]
+[ext_resource type="PackedScene" path="res://Prefab/enemy_guard.tscn" id="5_guard"]
+[ext_resource type="PackedScene" path="res://Prefab/enemy_butler.tscn" id="6_butler"]
+[ext_resource type="PackedScene" path="res://Prefab/supervisor.tscn" id="7_supervisor"]
+[ext_resource type="PackedScene" path="res://Prefab/light.tscn" id="8_light"]
+[ext_resource type="Texture2D" uid="uid://b4mhq4oj4hdrk" path="res://Art/background1.jpg" id="9_bg1"]
+[ext_resource type="Texture2D" uid="uid://cxfrfegaj12p3" path="res://Art/background2.jpg" id="10_bg2"]
 
 [node name="GameWorld" type="Node2D"]
 script = ExtResource("1_script")
@@ -28,6 +27,7 @@ offset_left = -200.0
 offset_top = -44.0
 offset_right = 200.0
 offset_bottom = -20.0
+grow_horizontal = 2
 grow_vertical = 0
 
 [node name="BarBackground" type="ColorRect" parent="SuspicionUI/BarContainer"]
@@ -80,7 +80,6 @@ offset_bottom = -20.0
 grow_vertical = 0
 
 [node name="Slot1Label" type="Label" parent="MaskSlotUI"]
-layout_mode = 0
 offset_left = 20.0
 offset_top = 820.0
 offset_right = 240.0
@@ -89,7 +88,6 @@ theme_override_font_sizes/font_size = 24
 text = "槽位1：空面具"
 
 [node name="Slot2Label" type="Label" parent="MaskSlotUI"]
-layout_mode = 0
 offset_left = 260.0
 offset_top = 820.0
 offset_right = 480.0
@@ -99,7 +97,6 @@ text = "槽位2：空面具"
 
 [node name="PrincessLabel" type="Label" parent="MaskSlotUI"]
 visible = false
-layout_mode = 0
 offset_left = 20.0
 offset_top = 865.0
 offset_right = 200.0
@@ -107,23 +104,30 @@ offset_bottom = 895.0
 theme_override_font_sizes/font_size = 22
 text = "公主面具"
 
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer1" type="ParallaxLayer" parent="ParallaxBackground"]
+
+[node name="Background1" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer1"]
+position = Vector2(800, 450)
+texture = ExtResource("9_bg1")
+centered = true
+
+[node name="Background1_2" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer1"]
+position = Vector2(2400, 450)
+texture = ExtResource("9_bg1")
+centered = true
+
+[node name="Background2" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer1"]
+position = Vector2(4000, 450)
+texture = ExtResource("10_bg2")
+centered = true
+
 [node name="Supervisor" parent="." instance=ExtResource("7_supervisor")]
-position = Vector2(2407, 427)
+position = Vector2(2358, 521)
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(400, 450)
-
-[node name="Platform" type="StaticBody2D" parent="."]
-collision_mask = 0
-
-[node name="Ground" type="CollisionShape2D" parent="Platform"]
-position = Vector2(10000, 868)
-shape = SubResource("RectangleShape2D_platform")
-
-[node name="PlatformVisual" type="Polygon2D" parent="Platform"]
-scale = Vector2(0.11579999, 1)
-color = Color(0.4, 0.35, 0.3, 1)
-polygon = PackedVector2Array(0, 768, 20000, 768, 20000, 863.0349, 20000, 968, 0, 968)
+position = Vector2(800, 450)
 
 [node name="Character" parent="." instance=ExtResource("2_character")]
 position = Vector2(400, 736)
