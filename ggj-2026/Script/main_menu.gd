@@ -29,7 +29,21 @@ func _on_start_button_pressed() -> void:
 	# 切换到游戏场景
 	get_tree().change_scene_to_file("res://Scene/GameWorld.tscn")
 
-## 帮助按钮点击（预留功能）
+## 帮助按钮点击
 func _on_help_button_pressed() -> void:
-	# TODO: 实现帮助界面
-	print("帮助按钮被点击 - 功能待实现")
+	# 加载并实例化帮助弹窗
+	var help_popup_scene := load("res://Scene/HelpPopup.tscn") as PackedScene
+	if help_popup_scene == null:
+		push_error("无法加载帮助弹窗场景")
+		return
+	
+	var help_popup := help_popup_scene.instantiate()
+	add_child(help_popup)
+	
+	# 连接关闭信号（可选，用于后续扩展）
+	if help_popup.has_signal("popup_closed"):
+		help_popup.popup_closed.connect(_on_help_popup_closed)
+
+## 帮助弹窗关闭回调（可选）
+func _on_help_popup_closed() -> void:
+	print("帮助弹窗已关闭")
