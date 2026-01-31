@@ -1,6 +1,6 @@
-[gd_scene load_steps=18 format=3 uid="uid://t7h47rybksu5"]
+[gd_scene load_steps=19 format=3 uid="uid://t7h47rybksu5"]
 
-[ext_resource type="Script" uid="uid://qdj1h4807qvl" path="res://Script/game_world.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://nve7gepa1uvs" path="res://Script/game_world.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://503kg0miryk0" path="res://Prefab/character.tscn" id="2_character"]
 [ext_resource type="PackedScene" uid="uid://dancer001" path="res://Prefab/enemy_dancer.tscn" id="3_dancer"]
 [ext_resource type="PackedScene" uid="uid://princess01" path="res://Prefab/enemy_princess.tscn" id="4_princess"]
@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://clqmauspx4k2w" path="res://Art/curtain5.png" id="15_curtain5"]
 [ext_resource type="Script" uid="uid://b5xei3m7f4vej" path="res://Script/curtain_controller.gd" id="16_curtain_script"]
 [ext_resource type="AudioStream" uid="uid://rm10k8onrdiv" path="res://Music/bgm1.ogg" id="17_bgm"]
+[ext_resource type="Texture2D" uid="uid://be3iew0sbwec3" path="res://Art/qipao.png" id="18_qipao"]
 
 [node name="GameWorld" type="Node2D"]
 script = ExtResource("1_script")
@@ -26,11 +27,10 @@ stream = ExtResource("17_bgm")
 autoplay = true
 
 [node name="SuspicionUI" type="CanvasLayer" parent="."]
-layer = 10
 process_mode = 2
+layer = 10
 
 [node name="SuspicionLabel" type="Label" parent="SuspicionUI"]
-layout_mode = 0
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -99,9 +99,6 @@ vertical_alignment = 1
 
 [node name="AssassinatePrompt" type="Label" parent="SuspicionUI"]
 visible = false
-layout_mode = 0
-offset_left = 0.0
-offset_top = 0.0
 offset_right = 300.0
 offset_bottom = 80.0
 theme_override_colors/font_color = Color(1, 1, 0, 1)
@@ -280,6 +277,12 @@ texture = ExtResource("9_bg1")
 [node name="Background2" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer1"]
 position = Vector2(4000, 450)
 texture = ExtResource("10_bg2")
+
+[node name="Qipao" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer1"]
+position = Vector2(4092, 209.99994)
+rotation = -0.58817595
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("18_qipao")
 
 [node name="Supervisor" parent="." instance=ExtResource("7_supervisor")]
 position = Vector2(2358, 521)
