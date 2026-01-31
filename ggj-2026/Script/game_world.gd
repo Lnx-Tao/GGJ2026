@@ -4,6 +4,8 @@ extends Node2D
 const CHARACTER_SCREEN_X := 400
 ## 摄像机向右跟随的最大距离（像素），超过后相机固定、角色仍可移动
 const CAMERA_TRAVEL_MAX := 3200.0
+## 接近木偶师的距离阈值（像素），在此距离内可刺杀
+const ASSASSINATE_DISTANCE := 150.0
 
 ## 以下怀疑值参数可在检查器中直接编辑（选中 GameWorld 节点）
 @export_group("怀疑值 - 睁眼时")
@@ -28,9 +30,15 @@ const CAMERA_TRAVEL_MAX := 3200.0
 @onready var character: CharacterBody2D = $Character
 @onready var supervisor: Node2D = $Supervisor
 @onready var curtain_controller: Control = $CurtainLayer/CurtainContainer
+@onready var suspicion_label: Label = $SuspicionUI/SuspicionLabel
 @onready var suspicion_bar_bg: ColorRect = $SuspicionUI/BarContainer/BarBackground
 @onready var suspicion_bar_fill: ColorRect = $SuspicionUI/BarContainer/BarFill
 @onready var game_over_label: Label = $SuspicionUI/GameOverLabel
+@onready var assassinate_prompt: Label = $SuspicionUI/AssassinatePrompt
+@onready var victory_ui: Control = $SuspicionUI/VictoryUI
+@onready var victory_label: Label = $SuspicionUI/VictoryUI/VictoryContainer/VictoryLabel
+@onready var retry_button: Button = $SuspicionUI/VictoryUI/VictoryContainer/ButtonContainer/RetryButton
+@onready var main_menu_button: Button = $SuspicionUI/VictoryUI/VictoryContainer/ButtonContainer/MainMenuButton
 @onready var mask_slot_label_1: Label = $MaskSlotUI/Slot1Label
 @onready var mask_slot_label_2: Label = $MaskSlotUI/Slot2Label
 @onready var princess_label: Label = $MaskSlotUI/PrincessLabel
@@ -39,6 +47,8 @@ var dancer_mask: Node = null
 var suspicion: float = 0.0
 var displayed_suspicion: float = 0.0
 var game_over: bool = false
+var game_victory: bool = false
+var can_assassinate: bool = false
 ## 当前戴上的面具："" | "guard" | "butler" | "dancer"（公主为被动，不在此）
 var mask_active: String = ""
 ## 当前面具是否在警告时戴上（仅此时才具有规避监管效果）
@@ -71,16 +81,31 @@ const CURTAIN_OPEN_CAMERA_DISTANCE: float = 2400.0
 
 func _ready() -> void:
 	game_over_label.visible = false
+	victory_ui.visible = false
+	assassinate_prompt.visible = false
+	# 确保UI在游戏暂停时也能响应输入
+	victory_ui.process_mode = Node.PROCESS_MODE_ALWAYS
+	retry_button.process_mode = Node.PROCESS_MODE_ALWAYS
+	main_menu_button.process_mode = Node.PROCESS_MODE_ALWAYS
 	_update_suspicion_bar(0.0)
 	_update_mask_slot_ui()
 	var DancerMaskScript = load("res://Script/dancer_mask.gd") as GDScript
 	dancer_mask = DancerMaskScript.new()
 	add_child(dancer_mask)
 	dancer_mask.rhythm_completed.connect(_on_dancer_mask_completed)
+	# 连接按钮信号
+	retry_button.pressed.connect(_on_retry_button_pressed)
+	main_menu_button.pressed.connect(_on_main_menu_button_pressed)
 
 func _input(event: InputEvent) -> void:
-	if game_over:
+	if game_over or game_victory:
 		return
+	# 检查是否可以刺杀木偶师
+	if can_assassinate and event is InputEventKey:
+		var e_key_event := event as InputEventKey
+		if e_key_event.pressed and not e_key_event.echo and e_key_event.keycode == KEY_E:
+			_trigger_victory()
+			return
 	# 监管者睁眼时不可使用面具；其它时候均可使用；已戴面具时不再响应
 	if supervisor.is_eye_open or mask_active != "":
 		return
@@ -136,10 +161,28 @@ func _update_mask_slot_ui() -> void:
 	princess_label.visible = princess_count > 0
 
 func _process(delta: float) -> void:
-	if game_over:
+	if game_over or game_victory:
 		return
 	if not is_instance_valid(character):
 		return
+	# 检测是否接近木偶师
+	var char_pos := character.global_position
+	var supervisor_pos := supervisor.global_position
+	var distance := char_pos.distance_to(supervisor_pos)
+	can_assassinate = distance <= ASSASSINATE_DISTANCE
+	assassinate_prompt.visible = can_assassinate
+	# 将提示显示在角色头顶（世界坐标转屏幕坐标）
+	if can_assassinate:
+		var world_offset := Vector2(0, -100)  # 角色头顶偏移
+		var world_pos := char_pos + world_offset
+		var cam_pos := camera.global_position
+		var viewport_size := get_viewport().get_visible_rect().size
+		# 计算屏幕坐标（相对于视口中心）
+		var screen_pos := Vector2(
+			(world_pos.x - cam_pos.x) + viewport_size.x / 2,
+			(world_pos.y - cam_pos.y) + viewport_size.y / 2
+		)
+		assassinate_prompt.position = screen_pos - Vector2(assassinate_prompt.size.x / 2, assassinate_prompt.size.y)
 	var was_eye_open_last_frame: bool = _supervisor_was_eye_open
 	# 监管者从睁眼变为闭眼：摘下面具，恢复正常
 	if _supervisor_was_eye_open and not supervisor.is_eye_open:
@@ -243,11 +286,38 @@ func _update_suspicion_bar(amount: float) -> void:
 	suspicion_bar_fill.offset_right = w
 	suspicion_bar_fill.offset_top = 0.0
 	suspicion_bar_fill.offset_bottom = suspicion_bar_bg.size.y
+	# 更新怀疑值文本显示（0-100）
+	var suspicion_value: int = int(clampf(amount, 0.0, 1.0) * 100.0)
+	suspicion_label.text = str(suspicion_value) + "/100"
 
 func _trigger_game_over() -> void:
 	game_over = true
-	game_over_label.visible = true
+	game_over_label.visible = false  # 隐藏旧的简单标签
+	_show_game_end_ui("游戏失败", Color(1, 0.2, 0.2, 1))  # 红色
 	get_tree().paused = true
+
+func _trigger_victory() -> void:
+	game_victory = true
+	assassinate_prompt.visible = false
+	_show_game_end_ui("关卡胜利！", Color(0.2, 1, 0.2, 1))  # 绿色
+	get_tree().paused = true
+
+func _show_game_end_ui(text: String, color: Color) -> void:
+	victory_ui.visible = true
+	victory_label.text = text
+	victory_label.add_theme_color_override("font_color", color)
+
+func _on_retry_button_pressed() -> void:
+	# 取消暂停并重新加载GameWorld场景
+	get_tree().paused = false
+	# 使用 call_deferred 确保在正确的时机切换场景
+	get_tree().call_deferred("change_scene_to_file", "res://Scene/GameWorld.tscn")
+
+func _on_main_menu_button_pressed() -> void:
+	# 取消暂停并切换到主菜单场景
+	get_tree().paused = false
+	# 使用 call_deferred 确保在正确的时机切换场景
+	get_tree().call_deferred("change_scene_to_file", "res://Scene/MainMenu.tscn")
 
 func _remove_mask() -> void:
 	if mask_active == "":

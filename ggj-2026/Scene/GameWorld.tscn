@@ -1,13 +1,11 @@
 [gd_scene load_steps=18 format=3 uid="uid://t7h47rybksu5"]
 
 [ext_resource type="Script" uid="uid://qdj1h4807qvl" path="res://Script/game_world.gd" id="1_script"]
-[ext_resource type="Script" path="res://Script/curtain_controller.gd" id="16_curtain_script"]
-[ext_resource type="AudioStreamOggVorbis" path="res://Music/bgm1.ogg" id="17_bgm"]
-[ext_resource type="PackedScene" path="res://Prefab/character.tscn" id="2_character"]
-[ext_resource type="PackedScene" path="res://Prefab/enemy_dancer.tscn" id="3_dancer"]
-[ext_resource type="PackedScene" path="res://Prefab/enemy_princess.tscn" id="4_princess"]
-[ext_resource type="PackedScene" path="res://Prefab/enemy_guard.tscn" id="5_guard"]
-[ext_resource type="PackedScene" path="res://Prefab/enemy_butler.tscn" id="6_butler"]
+[ext_resource type="PackedScene" uid="uid://503kg0miryk0" path="res://Prefab/character.tscn" id="2_character"]
+[ext_resource type="PackedScene" uid="uid://dancer001" path="res://Prefab/enemy_dancer.tscn" id="3_dancer"]
+[ext_resource type="PackedScene" uid="uid://princess01" path="res://Prefab/enemy_princess.tscn" id="4_princess"]
+[ext_resource type="PackedScene" uid="uid://guard001" path="res://Prefab/enemy_guard.tscn" id="5_guard"]
+[ext_resource type="PackedScene" uid="uid://butler001" path="res://Prefab/enemy_butler.tscn" id="6_butler"]
 [ext_resource type="PackedScene" path="res://Prefab/supervisor.tscn" id="7_supervisor"]
 [ext_resource type="PackedScene" path="res://Prefab/light.tscn" id="8_light"]
 [ext_resource type="Texture2D" uid="uid://b4mhq4oj4hdrk" path="res://Art/background1.jpg" id="9_bg1"]
@@ -17,6 +15,8 @@
 [ext_resource type="Texture2D" uid="uid://bd44njrwbblxn" path="res://Art/curtain3.png" id="13_curtain3"]
 [ext_resource type="Texture2D" uid="uid://cxfgygwlj8un8" path="res://Art/curtain4.png" id="14_curtain4"]
 [ext_resource type="Texture2D" uid="uid://clqmauspx4k2w" path="res://Art/curtain5.png" id="15_curtain5"]
+[ext_resource type="Script" uid="uid://b5xei3m7f4vej" path="res://Script/curtain_controller.gd" id="16_curtain_script"]
+[ext_resource type="AudioStream" uid="uid://rm10k8onrdiv" path="res://Music/bgm1.ogg" id="17_bgm"]
 
 [node name="GameWorld" type="Node2D"]
 script = ExtResource("1_script")
@@ -24,10 +24,28 @@ script = ExtResource("1_script")
 [node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("17_bgm")
 autoplay = true
-volume_db = 0.0
 
 [node name="SuspicionUI" type="CanvasLayer" parent="."]
 layer = 10
+process_mode = 2
+
+[node name="SuspicionLabel" type="Label" parent="SuspicionUI"]
+layout_mode = 0
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -50.0
+offset_top = -64.0
+offset_right = 50.0
+offset_bottom = -44.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 28
+text = "0/100"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="BarContainer" type="Control" parent="SuspicionUI"]
 layout_mode = 3
@@ -79,6 +97,77 @@ text = "游戏失败"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="AssassinatePrompt" type="Label" parent="SuspicionUI"]
+visible = false
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 300.0
+offset_bottom = 80.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_font_sizes/font_size = 36
+text = "按E刺杀木偶师"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VictoryUI" type="Control" parent="SuspicionUI"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VictoryBackground" type="ColorRect" parent="SuspicionUI/VictoryUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="VictoryContainer" type="VBoxContainer" parent="SuspicionUI/VictoryUI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VictoryLabel" type="Label" parent="SuspicionUI/VictoryUI/VictoryContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 1, 0.2, 1)
+theme_override_font_sizes/font_size = 64
+text = "关卡胜利！"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonContainer" type="HBoxContainer" parent="SuspicionUI/VictoryUI/VictoryContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="RetryButton" type="Button" parent="SuspicionUI/VictoryUI/VictoryContainer/ButtonContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.8, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 32
+text = "重新尝试"
+
+[node name="MainMenuButton" type="Button" parent="SuspicionUI/VictoryUI/VictoryContainer/ButtonContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.8, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 32
+text = "返回主菜单"
+
 [node name="CurtainLayer" type="CanvasLayer" parent="."]
 
 [node name="CurtainContainer" type="Control" parent="CurtainLayer"]
@@ -98,13 +187,13 @@ texture = ExtResource("12_curtain2")
 stretch_mode = 6
 
 [node name="CurtainTop" type="TextureRect" parent="CurtainLayer/CurtainContainer"]
+z_index = 10
 layout_mode = 1
 offset_left = -28.0
 offset_right = 1572.0
 offset_bottom = 900.0
 texture = ExtResource("11_curtain1")
 stretch_mode = 6
-z_index = 10
 
 [node name="CurtainRightTop" type="TextureRect" parent="CurtainLayer/CurtainContainer"]
 layout_mode = 1
@@ -199,7 +288,8 @@ position = Vector2(2358, 521)
 position = Vector2(800, 450)
 
 [node name="Character" parent="." instance=ExtResource("2_character")]
-position = Vector2(400, 736)
+position = Vector2(304.00003, 657.00006)
+scale = Vector2(0.8, 0.8)
 
 [node name="Dancer" parent="." instance=ExtResource("3_dancer")]
 position = Vector2(800, 744)
@@ -212,6 +302,7 @@ position = Vector2(1600, 744)
 
 [node name="Butler" parent="." instance=ExtResource("6_butler")]
 position = Vector2(2000, 744)
+scale = Vector2(1.4, 1.4)
 
 [node name="Light" parent="." instance=ExtResource("8_light")]
 position = Vector2(616, 709)
