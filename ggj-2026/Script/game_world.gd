@@ -2,6 +2,8 @@ extends Node2D
 
 ## 人物在画面中的 X 位置（距左像素，400 = 中间偏左）
 const CHARACTER_SCREEN_X := 400
+## 摄像机向右跟随的最大距离（像素），超过后相机固定、角色仍可移动
+const CAMERA_TRAVEL_MAX := 3200.0
 
 ## 以下怀疑值参数可在检查器中直接编辑（选中 GameWorld 节点）
 @export_group("怀疑值 - 睁眼时")
@@ -9,10 +11,6 @@ const CHARACTER_SCREEN_X := 400
 @export var suspicion_eye_duration: float = 3.0
 ## 睁眼时「不在灯光区」：3 秒内总共增加的怀疑值（0.3 = 30%）
 @export_range(0.0, 1.0, 0.01) var suspicion_add_outside_light: float = 0.3
-## 睁眼时「在灯光下」：3 秒内涨满，此处为“满”的目标值（一般保持 1.0）
-@export_range(0.0, 1.0, 0.01) var suspicion_light_full: float = 1.0
-## 睁眼时「玩家移动过」：3 秒内涨到的目标值（1.0 = 涨满，可单独调节）
-@export_range(0.0, 1.0, 0.01) var suspicion_moved_full: float = 1.0
 
 @export_group("怀疑值 - 其它")
 ## 每次刺杀成功增加的怀疑值（0.25 = 25%）
@@ -57,14 +55,14 @@ var _supervisor_was_eye_open: bool = false
 var _dancer_rhythm_triggered: bool = false
 ## 本轮睁眼是否已用过公主被动（只抵挡一次）
 var _princess_used_this_eye: bool = false
-## 本轮睁眼期间玩家是否移动过（用于无面具时：移动则怀疑值均匀涨满，不移动则正常增长）
+## 本轮睁眼期间玩家是否移动过（用于无面具时：移动则立即游戏失败，不移动则正常增长）
 var _moved_during_eye_open: bool = false
-## 本轮睁眼已过时间（秒），用于“移动后补满”时按剩余时间算速率
-var _eye_open_elapsed: float = 0.0
 ## 本局是否已被动触发过公主面具（触发后后续怀疑值增长乘 suspicion_princess_used_multiplier）
 var _princess_passive_ever_used: bool = false
 ## 上一帧怀疑值，用于检测变化并输出到控制台
 var _last_suspicion: float = -1.0
+## 相机起始世界 X（用于计算右移 3200 后固定），-inf 表示未初始化
+var _camera_start_x: float = -INF
 
 func _ready() -> void:
 	game_over_label.visible = false
@@ -137,6 +135,7 @@ func _process(delta: float) -> void:
 		return
 	if not is_instance_valid(character):
 		return
+	var was_eye_open_last_frame: bool = _supervisor_was_eye_open
 	# 监管者从睁眼变为闭眼：摘下面具，恢复正常
 	if _supervisor_was_eye_open and not supervisor.is_eye_open:
 		_remove_mask()
@@ -144,20 +143,21 @@ func _process(delta: float) -> void:
 	if not supervisor.is_eye_open:
 		_dancer_rhythm_triggered = false
 		_moved_during_eye_open = false
-		_eye_open_elapsed = 0.0
-	# 刚进入睁眼：重置“本轮是否移动”和睁眼计时
+	# 刚进入睁眼：重置“本轮是否移动”
 	if supervisor.is_eye_open and not _supervisor_was_eye_open:
 		_moved_during_eye_open = false
-		_eye_open_elapsed = 0.0
-	# 睁眼期间：累计已过时间；有位移或正在按移动键都记为“移动过”（避免 velocity 晚一帧导致漏判）
+	# 睁眼期间：有位移或正在按移动键都记为“移动过”（避免 velocity 晚一帧导致漏判）
 	if supervisor.is_eye_open:
-		_eye_open_elapsed += delta
 		if abs(character.velocity.x) > 0.1 or Input.is_action_pressed("ui_select"):
 			_moved_during_eye_open = true
 	_supervisor_was_eye_open = supervisor.is_eye_open
 
-	# 相机跟随（只跟随x，y固定为450以保持背景铺满）
-	camera.global_position = Vector2(character.global_position.x + 800 - CHARACTER_SCREEN_X, 450.0)
+	# 相机跟随（只跟随x，y固定为450）；右移 3200 像素后固定，角色仍可移动
+	var desired_cam_x: float = character.global_position.x + (800 - CHARACTER_SCREEN_X)
+	if _camera_start_x <= -INF:
+		_camera_start_x = desired_cam_x
+	var cam_x: float = minf(desired_cam_x, _camera_start_x + CAMERA_TRAVEL_MAX)
+	camera.global_position = Vector2(cam_x, 450.0)
 
 	# 监管者睁眼期间（3 秒）才计算怀疑值
 	if supervisor.is_eye_open:
@@ -180,19 +180,17 @@ func _process(delta: float) -> void:
 			skip_suspicion = true
 			print("公主面具自动抵挡一次监管")
 		if not skip_suspicion:
-			var mult: float = _suspicion_growth_multiplier()
 			if _is_character_in_light_zone():
-				# 灯光下：3 秒内逐渐涨满
-				var light_rate: float = suspicion_light_full / suspicion_eye_duration
-				suspicion = minf(1.0, suspicion + delta * light_rate * mult)
-			elif _moved_during_eye_open:
-				# 未戴面具且本轮移动过：按剩余时间算速率，保证 3 秒结束时涨到 suspicion_moved_full（避免“晚移动”时涨不满）
-				var remaining: float = maxf(0.001, suspicion_eye_duration - _eye_open_elapsed)
-				var need: float = suspicion_moved_full - suspicion
-				var rate: float = need / remaining if need > 0.0 else 0.0
-				suspicion = minf(1.0, suspicion + delta * rate * mult)
-			else:
-				# 未戴面具且未移动：正常增长（如 10% / 3 秒，由 suspicion_add_outside_light 控制）
+				# 灯光下：直接游戏失败，进度条保持原状
+				_trigger_game_over()
+				return
+			if _moved_during_eye_open:
+				# 未戴面具且本轮移动过：直接游戏失败，进度条保持原状
+				_trigger_game_over()
+				return
+			# 未戴面具且未移动：正常增长（仅从睁眼第二帧开始加，避免第一帧误判未移动导致先涨一点再触发“移动”失败）
+			if was_eye_open_last_frame:
+				var mult: float = _suspicion_growth_multiplier()
 				var rate: float = suspicion_add_outside_light / suspicion_eye_duration
 				suspicion = minf(1.0, suspicion + delta * rate * mult)
 
