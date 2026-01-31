@@ -1,6 +1,6 @@
 extends Enemy
 
-## 敌人类型名称（管家）
+## 刺杀获得管家面具
 func _ready() -> void:
+	mask_type = "butler"
 	super._ready()
-	# 管家默认属性可在场景中通过 @export 调整

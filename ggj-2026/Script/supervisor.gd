@@ -15,6 +15,8 @@ extends Node2D
 
 ## 当前是否处于睁眼观察的 3 秒内（供外部判断怀疑值）
 var is_eye_open: bool = false
+## 当前是否处于警告阶段（睁眼前 1.5 秒，供外部判断是否可戴面具）
+var is_warning: bool = false
 
 var _state: String = "idle"  # idle | warning | eye_open
 var _timer: float = 0.0
@@ -34,6 +36,7 @@ func _center_ui() -> void:
 
 func _schedule_next_eye() -> void:
 	is_eye_open = false
+	is_warning = false
 	_state = "idle"
 	_next_eye_in = randf_range(eye_interval_min, eye_interval_max)
 	_timer = 0.0
@@ -45,11 +48,13 @@ func _process(delta: float) -> void:
 		"idle":
 			if _timer >= _next_eye_in - warning_duration:
 				_state = "warning"
+				is_warning = true
 				warning_label.visible = true
 				_timer = 0.0
 		"warning":
 			if _timer >= warning_duration:
 				warning_label.visible = false
+				is_warning = false
 				_state = "eye_open"
 				is_eye_open = true
 				eye_container.visible = true

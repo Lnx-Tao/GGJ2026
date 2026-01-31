@@ -1,6 +1,6 @@
 extends Enemy
 
-## 敌人类型名称（公主）
+## 刺杀获得公主面具
 func _ready() -> void:
+	mask_type = "princess"
 	super._ready()
-	# 公主默认属性可在场景中通过 @export 调整
