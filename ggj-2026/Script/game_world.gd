@@ -27,6 +27,7 @@ const CAMERA_TRAVEL_MAX := 3200.0
 @onready var camera: Camera2D = $Camera2D
 @onready var character: CharacterBody2D = $Character
 @onready var supervisor: Node2D = $Supervisor
+@onready var curtain_controller: Control = $CurtainLayer/CurtainContainer
 @onready var suspicion_bar_bg: ColorRect = $SuspicionUI/BarContainer/BarBackground
 @onready var suspicion_bar_fill: ColorRect = $SuspicionUI/BarContainer/BarFill
 @onready var game_over_label: Label = $SuspicionUI/GameOverLabel
@@ -63,6 +64,10 @@ var _princess_passive_ever_used: bool = false
 var _last_suspicion: float = -1.0
 ## 相机起始世界 X（用于计算右移 3200 后固定），-inf 表示未初始化
 var _camera_start_x: float = -INF
+## 帷幕是否已经撤掉
+var _curtains_opened: bool = false
+## 触发帷幕撤掉的相机移动距离（相机向右移动这个距离后撤掉帷幕）
+const CURTAIN_OPEN_CAMERA_DISTANCE: float = 2400.0
 
 func _ready() -> void:
 	game_over_label.visible = false
@@ -158,6 +163,14 @@ func _process(delta: float) -> void:
 		_camera_start_x = desired_cam_x
 	var cam_x: float = minf(desired_cam_x, _camera_start_x + CAMERA_TRAVEL_MAX)
 	camera.global_position = Vector2(cam_x, 450.0)
+	
+	# 检测是否需要撤掉帷幕（当相机向右移动2400个单位后）
+	if not _curtains_opened and _camera_start_x > -INF:
+		var camera_distance = cam_x - _camera_start_x
+		if camera_distance >= CURTAIN_OPEN_CAMERA_DISTANCE:
+			if curtain_controller != null and curtain_controller.has_method("open_curtains"):
+				curtain_controller.open_curtains()
+				_curtains_opened = true
 
 	# 监管者睁眼期间（3 秒）才计算怀疑值
 	if supervisor.is_eye_open:

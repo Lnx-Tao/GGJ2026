@@ -1,6 +1,8 @@
-[gd_scene load_steps=16 format=3 uid="uid://t7h47rybksu5"]
+[gd_scene load_steps=18 format=3 uid="uid://t7h47rybksu5"]
 
 [ext_resource type="Script" uid="uid://qdj1h4807qvl" path="res://Script/game_world.gd" id="1_script"]
+[ext_resource type="Script" path="res://Script/curtain_controller.gd" id="16_curtain_script"]
+[ext_resource type="AudioStreamOggVorbis" path="res://Music/bgm1.ogg" id="17_bgm"]
 [ext_resource type="PackedScene" path="res://Prefab/character.tscn" id="2_character"]
 [ext_resource type="PackedScene" path="res://Prefab/enemy_dancer.tscn" id="3_dancer"]
 [ext_resource type="PackedScene" path="res://Prefab/enemy_princess.tscn" id="4_princess"]
@@ -18,6 +20,11 @@
 
 [node name="GameWorld" type="Node2D"]
 script = ExtResource("1_script")
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("17_bgm")
+autoplay = true
+volume_db = 0.0
 
 [node name="SuspicionUI" type="CanvasLayer" parent="."]
 layer = 10
@@ -81,6 +88,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("16_curtain_script")
 
 [node name="CurtainLeftTop" type="TextureRect" parent="CurtainLayer/CurtainContainer"]
 layout_mode = 1
