@@ -214,4 +214,3 @@ func _ready() -> void:
 	
 	# 初始隐藏
 	visible = false
-

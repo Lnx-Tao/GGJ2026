@@ -91,4 +91,3 @@ static func quick_start(beat_count: int = 4, callback: Callable = Callable()) ->
 		if callback.is_valid():
 			instance.rhythm_completed.connect(callback)
 		instance.start_rhythm_game(beat_count)
-

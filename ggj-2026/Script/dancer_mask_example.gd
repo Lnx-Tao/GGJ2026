@@ -50,4 +50,3 @@ func _on_rhythm_completed(result: Dictionary) -> void:
 	else:
 		# 失败时的处理
 		print("舞者面具能力激活失败！")
-

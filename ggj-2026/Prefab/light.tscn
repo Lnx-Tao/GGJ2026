@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://light001"]
+
+[ext_resource type="Script" path="res://Script/light.gd" id="1_script"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_rect"]
+size = Vector2(128, 128)
+
+[node name="Light" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 0.4, 1)
+texture = SubResource("PlaceholderTexture2D_rect")

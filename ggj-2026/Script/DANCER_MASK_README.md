@@ -16,14 +16,14 @@
 ```gdscript
 # 在任何脚本中
 func use_dancer_mask() -> void:
-    var DancerMask = load("res://Script/dancer_mask.gd")
-    DancerMask.quick_start(4, func(result): _on_rhythm_completed(result))
+	var DancerMask = load("res://Script/dancer_mask.gd")
+	DancerMask.quick_start(4, func(result): _on_rhythm_completed(result))
 
 func _on_rhythm_completed(result: Dictionary) -> void:
-    if result.get("success"):
-        print("成功！得分: ", result.get("score"), "%")
-    else:
-        print("失败")
+	if result.get("success"):
+		print("成功！得分: ", result.get("score"), "%")
+	else:
+		print("失败")
 ```
 
 ### 方法2：创建实例并管理
@@ -32,21 +32,21 @@ func _on_rhythm_completed(result: Dictionary) -> void:
 var dancer_mask: Node = null
 
 func use_dancer_mask() -> void:
-    # 创建实例
-    dancer_mask = load("res://Script/dancer_mask.gd").new()
-    get_tree().root.add_child(dancer_mask)
-    
-    # 连接信号
-    dancer_mask.rhythm_completed.connect(_on_rhythm_completed)
-    
-    # 开始游戏
-    # 参数：节奏点数量, 指针速度(像素/秒), 判定容差(像素)
-    dancer_mask.start_rhythm_game(4, 200.0, 30.0)
+	# 创建实例
+	dancer_mask = load("res://Script/dancer_mask.gd").new()
+	get_tree().root.add_child(dancer_mask)
+	
+	# 连接信号
+	dancer_mask.rhythm_completed.connect(_on_rhythm_completed)
+	
+	# 开始游戏
+	# 参数：节奏点数量, 指针速度(像素/秒), 判定容差(像素)
+	dancer_mask.start_rhythm_game(4, 200.0, 30.0)
 
 func _on_rhythm_completed(result: Dictionary) -> void:
-    print("结果: ", result)
-    # 清理
-    dancer_mask = null
+	print("结果: ", result)
+	# 清理
+	dancer_mask = null
 ```
 
 ### 方法3：在场景中添加节点
@@ -59,8 +59,8 @@ func _on_rhythm_completed(result: Dictionary) -> void:
 @onready var dancer_mask = $DancerMask
 
 func use_dancer_mask() -> void:
-    dancer_mask.start_rhythm_game(4, 200.0, 30.0)
-    dancer_mask.rhythm_completed.connect(_on_rhythm_completed)
+	dancer_mask.start_rhythm_game(4, 200.0, 30.0)
+	dancer_mask.rhythm_completed.connect(_on_rhythm_completed)
 ```
 
 ## API 说明
@@ -92,10 +92,10 @@ func use_dancer_mask() -> void:
 
 ```gdscript
 {
-    "success": true,
-    "hit_count": 4,
-    "total_beats": 4,
-    "score": 100.0
+	"success": true,
+	"hit_count": 4,
+	"total_beats": 4,
+	"score": 100.0
 }
 ```
 
@@ -134,14 +134,13 @@ dancer_mask.start_rhythm_game(3, 250.0, 20.0)
 ```gdscript
 # 在 character.gd 或类似的脚本中
 func use_dancer_mask_ability() -> void:
-    var DancerMask = load("res://Script/dancer_mask.gd")
-    DancerMask.quick_start(4, func(result): 
-        if result.get("success"):
-            # 激活舞者面具能力
-            activate_dancer_mask_power()
-        else:
-            # 能力使用失败
-            print("舞者面具能力激活失败")
-    )
+	var DancerMask = load("res://Script/dancer_mask.gd")
+	DancerMask.quick_start(4, func(result): 
+		if result.get("success"):
+			# 激活舞者面具能力
+			activate_dancer_mask_power()
+		else:
+			# 能力使用失败
+			print("舞者面具能力激活失败")
+	)
 ```
-
