@@ -1,39 +1,33 @@
-[gd_scene load_steps=6 format=3 uid="uid://bqx5yk2character"]
+[gd_scene load_steps=4 format=3 uid="uid://503kg0miryk0"]
 
-[ext_resource type="Script" path="res://Script/character.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://ccxr8c08jd2mt" path="res://Script/character.gd" id="1_script"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_dot"]
-size = Vector2(1, 1)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_idle"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_m73dr"]
 animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("PlaceholderTexture2D_dot")
-}],
+"frames": [],
 "loop": true,
-"name": &"idle",
-"speed": 5.0
+"name": &"default",
+"speed": 4.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_attack"]
 size = Vector2(80, 60)
 
 [node name="Character" type="CharacterBody2D"]
-collision_layer = 1
-collision_mask = 1
 script = ExtResource("1_script")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-sprite_frames = SubResource("SpriteFrames_idle")
-animation = &"idle"
+position = Vector2(0.9999995, 1.1920929e-07)
+scale = Vector2(0.18035191, 0.18035191)
+sprite_frames = SubResource("SpriteFrames_m73dr")
+autoplay = "default"
+frame_progress = 0.16916607
 
 [node name="AttackRange" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 2
 monitorable = false
-monitoring = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackRange"]
-position = Vector2(72, 0)
+position = Vector2(48, 0)
 shape = SubResource("RectangleShape2D_attack")
