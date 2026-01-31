@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://t7h47rybksu5"]
+[gd_scene load_steps=16 format=3 uid="uid://t7h47rybksu5"]
 
 [ext_resource type="Script" uid="uid://qdj1h4807qvl" path="res://Script/game_world.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://Prefab/character.tscn" id="2_character"]
@@ -10,11 +10,17 @@
 [ext_resource type="PackedScene" path="res://Prefab/light.tscn" id="8_light"]
 [ext_resource type="Texture2D" uid="uid://b4mhq4oj4hdrk" path="res://Art/background1.jpg" id="9_bg1"]
 [ext_resource type="Texture2D" uid="uid://cxfrfegaj12p3" path="res://Art/background2.jpg" id="10_bg2"]
+[ext_resource type="Texture2D" uid="uid://bj2n34suadwkv" path="res://Art/curtain1.png" id="11_curtain1"]
+[ext_resource type="Texture2D" uid="uid://b5ig4ioqsewcj" path="res://Art/curtain2.png" id="12_curtain2"]
+[ext_resource type="Texture2D" uid="uid://bd44njrwbblxn" path="res://Art/curtain3.png" id="13_curtain3"]
+[ext_resource type="Texture2D" uid="uid://cxfgygwlj8un8" path="res://Art/curtain4.png" id="14_curtain4"]
+[ext_resource type="Texture2D" uid="uid://clqmauspx4k2w" path="res://Art/curtain5.png" id="15_curtain5"]
 
 [node name="GameWorld" type="Node2D"]
 script = ExtResource("1_script")
 
 [node name="SuspicionUI" type="CanvasLayer" parent="."]
+layer = 10
 
 [node name="BarContainer" type="Control" parent="SuspicionUI"]
 layout_mode = 3
@@ -66,6 +72,64 @@ text = "游戏失败"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="CurtainLayer" type="CanvasLayer" parent="."]
+
+[node name="CurtainContainer" type="Control" parent="CurtainLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CurtainLeftTop" type="TextureRect" parent="CurtainLayer/CurtainContainer"]
+layout_mode = 1
+offset_right = 1600.0
+offset_bottom = 900.0
+texture = ExtResource("12_curtain2")
+stretch_mode = 6
+
+[node name="CurtainTop" type="TextureRect" parent="CurtainLayer/CurtainContainer"]
+layout_mode = 1
+offset_left = -28.0
+offset_right = 1572.0
+offset_bottom = 900.0
+texture = ExtResource("11_curtain1")
+stretch_mode = 6
+z_index = 10
+
+[node name="CurtainRightTop" type="TextureRect" parent="CurtainLayer/CurtainContainer"]
+layout_mode = 1
+offset_left = -2.0
+offset_right = 1598.0
+offset_bottom = 900.0
+texture = ExtResource("13_curtain3")
+stretch_mode = 6
+
+[node name="CurtainLeft" type="TextureRect" parent="CurtainLayer/CurtainContainer"]
+z_index = -1
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_right = 1601.0
+grow_vertical = 2
+texture = ExtResource("14_curtain4")
+stretch_mode = 6
+
+[node name="CurtainRight" type="TextureRect" parent="CurtainLayer/CurtainContainer"]
+z_index = -1
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1600.0
+grow_horizontal = 0
+grow_vertical = 2
+texture = ExtResource("15_curtain5")
+stretch_mode = 6
+
 [node name="MaskSlotUI" type="CanvasLayer" parent="."]
 
 [node name="SlotContainer" type="Control" parent="MaskSlotUI"]
@@ -111,17 +175,14 @@ text = "公主面具"
 [node name="Background1" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer1"]
 position = Vector2(800, 450)
 texture = ExtResource("9_bg1")
-centered = true
 
 [node name="Background1_2" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer1"]
 position = Vector2(2400, 450)
 texture = ExtResource("9_bg1")
-centered = true
 
 [node name="Background2" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer1"]
 position = Vector2(4000, 450)
 texture = ExtResource("10_bg2")
-centered = true
 
 [node name="Supervisor" parent="." instance=ExtResource("7_supervisor")]
 position = Vector2(2358, 521)
